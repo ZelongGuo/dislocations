@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "dc3d.h"
-#include "dc3d.c"
 #include "disloc3d.h"
 
 #define DEG2RAD (M_PI / 180)

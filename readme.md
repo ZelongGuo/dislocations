@@ -15,3 +15,28 @@ Codes:
 okada_wrapper Ben  
 okada4py Romain   
 dc3d from stanford
+
+
+## compile (by shared library/dynamic link library, dll)
+
+```bash
+# Using gcc compiler
+gcc abc123.c -shared -o abc123.so -I<numpy_include_dir> -I<python_include_dir> -L<python_lib_dir> -l<python_lib_name>
+
+# for instance:
+(temp) ➜ ~/codes/CExtension gcc abc123.c -shared -o abc123.so -I/Users/zelong/opt/miniconda3/envs/temp/lib/python3.11/site-packages/numpy/core/include -I/Users/zelong/opt/miniconda3/envs/temp/include/python3.11 -L/Users/zelong/opt/miniconda3/envs/temp/lib -lpython3.11
+
+# It will produce a .so files in the current directory, and under current directory, you could import the module in the corresponding python interpreter.
+```
+
+```bash
+# build shared library in current directory otherwise in ./build
+python setup.py build --build-lib ./
+```
+or equivalently using gcc or clang:
+```bash
+# -undefined dynamic_looku is essential for undefined symbols
+gcc/clang abc123.c -Wall -fPIC -O2 -I/Users/zelong/opt/miniconda3/envs/temp/lib/python3.11/site-packages/numpy/core/include -I/Users/zelong/opt/miniconda3/envs/temp/include/python3.11 -shared -undefined dynamic_lookup -o abc123.so 
+```
+## installation (by installing)
+`python setup.py install` has been deprecated, please use `pip install **`
