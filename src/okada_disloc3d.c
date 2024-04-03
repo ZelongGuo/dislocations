@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "dc3d.h"
-#include "disloc3d.h"
+#include "okada_dc3d.h"
+#include "okada_disloc3d.h"
 
 #define DEG2RAD (M_PI / 180)
 #define cosd(a) (cos((a)*DEG2RAD))
@@ -16,7 +16,7 @@ void disloc3d(double *models,         int nmodel,
 {
     // input parameters
     // models: nmodel * 10
-    // length, width, depth (positive value), dip, strike, easting, northing, str-slip, dip-selip. opening
+    // length, width, depth (positive value, defined as the depth of fault upper center point, easting and northing likewise), dip, strike, easting, northing, str-slip, dip-selip. opening 
     // obs: nons * 3
     // easting, northing, depth (negative values)
     // mu: shear modulus
@@ -101,7 +101,8 @@ void disloc3d(double *models,         int nmodel,
             disl1 = model[7];
             disl2 = model[8];
             disl3 = model[9];
-	    // the depth is upper center point
+	    // the fault reference point is upper center point
+	    // the depth is the depth of upper center point
 	    depth = model[2];
             //depth = model[2] + 0.5*model[1]*sd;
             al1 = -0.5 * model[0];
@@ -111,7 +112,7 @@ void disloc3d(double *models,         int nmodel,
 
 
             // Can also use R = [cs ss 0; -ss cs 0; 0 0 1].
-            // Apply some translations to transfer Cartesian to Fault 
+            // Apply some translations to transfer Observation Cartesian to Fault Coordinate
             x = cs * (obs[0] - model[5]) - ss * (obs[1] - model[6]);
             y = ss * (obs[0] - model[5]) + cs * (obs[1] - model[6]);
             z = obs[2];

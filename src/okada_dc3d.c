@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "dc3d.h"
+#include "okada_dc3d.h"
 
 /* Common Block Declarations */
 typedef double doublereal;
@@ -194,8 +194,8 @@ struct {
 /* -------------------------------- */
 /* ----- ON FAULT EDGE */
 /*<        >*/
-    if (q == f0 && (xi[0] * xi[1] <= f0 && et[0] * et[1] == f0 || et[0] * et[
-	    1] <= f0 && xi[0] * xi[1] == f0)) {
+    if (q == f0 && ((xi[0] * xi[1] <= f0 && et[0] * et[1] == f0) || (et[0] * et[
+	    1] <= f0 && xi[0] * xi[1] == f0))) {
 /*<         IRET=1 >*/
 	*iret = 1;
 /*<         GO TO 99 >*/
@@ -316,8 +316,8 @@ L220:
 /* -------------------------------- */
 /* ----- ON FAULT EDGE */
 /*<        >*/
-    if (q == f0 && (xi[0] * xi[1] <= f0 && et[0] * et[1] == f0 || et[0] * et[
-	    1] <= f0 && xi[0] * xi[1] == f0)) {
+    if (q == f0 && ((xi[0] * xi[1] <= f0 && et[0] * et[1] == f0) || (et[0] * et[
+	    1] <= f0 && xi[0] * xi[1] == f0))) {
 /*<         IRET=1 >*/
 	*iret = 1;
 /*<         GO TO 99 >*/

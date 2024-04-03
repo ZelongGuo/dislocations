@@ -36,7 +36,7 @@ python setup.py build --build-lib ./
 or equivalently using gcc or clang:
 ```bash
 # -undefined dynamic_looku is essential for undefined symbols
-gcc/clang abc123.c -Wall -fPIC -O2 -I/Users/zelong/opt/miniconda3/envs/temp/lib/python3.11/site-packages/numpy/core/include -I/Users/zelong/opt/miniconda3/envs/temp/include/python3.11 -shared -undefined dynamic_lookup -o abc123.so 
+gcc/clang src/dislocation.c src/okada_dc3d.c src/okada_disloc3d.c -fPIC -O2 -I/Users/zelong/opt/miniconda3/envs/temp/lib/python3.11/site-packages/numpy/core/include -I/Users/zelong/opt/miniconda3/envs/temp/include/python3.11 -shared -undefined dynamic_lookup -o dislocation.so
 ```
 ## installation (by installing)
 `python setup.py install` has been deprecated, please use `pip install **`

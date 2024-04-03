@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "dc3d0.h"
-#include "dc3d0.c"
+#include "okada_dc3d0.h"
+//#include "okada_dc3d0.c"
 
 
 #define DEG2RAD (M_PI / 180)

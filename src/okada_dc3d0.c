@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "dc3d0.h"
+#include "okada_dc3d0.h"
 
 /* Common Block Declarations */
 

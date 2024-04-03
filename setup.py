@@ -5,11 +5,13 @@ import numpy as np
 # include the header of NumPy C API
 np_inc = np.get_include()
 
+source = ["src/dislocation.c", "src/okada_dc3d.c", "src/okada_disloc3d.c"]
+
 # extension module
-ext_module = Extension("abc123", ["abc123.c"], include_dirs=[np_inc])
+ext_module = Extension("dislocation", source, include_dirs=[np_inc])
 
 setup(
-    name="abc123",    # 打包文件名称
+    name="dislocation",    # 打包文件名称
     version="1.0",
     ext_modules=[ext_module],
     # script_args=["build_ext", "--build-lib", "./"],
