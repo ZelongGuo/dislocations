@@ -24,29 +24,47 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     }
     /* if (!PyArray_Check(obs)) { return NULL;} */
     
-    // obs and models must be a 2-D ndarray array, 1-D ndarray list is not allowed
+    // obs and models must be a 2-D ndarray array, 1-D ndarray list and more dimensions are not allowed
     if ((PyArray_NDIM(obs) != 2) || (PyArray_NDIM(models) != 2)) {
         PyErr_SetString(PyExc_ValueError, "The observations and fault models must be 2-D ndarrays of [n x 3] and [n x 10]! If it is a 1-D ndarray list (usually 1 stations or 1 fault model), reshape it to 2-D!\n");
         return NULL;
     }
-    
+
     // Check if obs has 3 columns and models has 10 columns
     if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) {
         PyErr_SetString(PyExc_ValueError, "The observations should be an array of [n x 3] and models should be [n x 10]!\n");
         return NULL;
     }
 
+    /* if you want accessing data with 1-D C array
+    double *c_models = (double *)PyArray_DATA(models);
+    double *c_obs = (double *)PyArray_DATA(obs);
+
+    // Get the numbers of models and stations
+    npy_intp nmodels = PyArray_SIZE(models) / 10;
+    npy_intp nobs    = PyArray_SIZE(obs) / 3;
+    printf("nmodels:  %ld\n", nmodels); 
+    printf("nobs:  %ld\n", nobs); 
+    
+     printf("\n");
+    for (npy_intp i =0; i<nmodels; i++) {
+        for (int j=0; j< 10; j++) {
+    	printf("%f  ", *(c_models + i*10 +j));
+        }
+        printf("\n");
+    }
+    */
+
     // Get the numbers of models and stations
     npy_intp nmodels = PyArray_SIZE(models) / 10;
     npy_intp nobs    = PyArray_SIZE(obs) / 3;
     /*printf("nmodels:  %ld\n", nmodels); 
      printf("nobs:  %ld\n", nobs); */
-    
+
     // Initialize C array (2-D)
     double **c_models = NULL;
     double **c_obs    = NULL;
 
-    // convert to 2-D array if models or obs is a 1-D list
     //if (nmodels == 1) {c_models = PyArray_Newshaple}
     PyArray_AsCArray((PyObject **)&models, &c_models, (npy_intp []){nmodels, 10}, 2, PyArray_DescrFromType(NPY_DOUBLE));
     if (PyErr_Occurred()) {
@@ -60,7 +78,9 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    /* printf("\n");
+    
+    // print 
+     printf("\n");
     for (npy_intp i =0; i<nmodels; i++) {
         for (int j=0; j< 10; j++) {
     	printf("%f  ", c_models[i][j]);
@@ -74,11 +94,11 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     	printf("%f  ", c_obs[i][j]);
         }
         printf("\n");
-    } */
+    }  
 
-    //double 
-    //// call disloc3d.c
-    //disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U, D, S, flags);
+
+    // call disloc3d.c
+    //d sloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U, D, S, flags);
 
     
     // free memory
