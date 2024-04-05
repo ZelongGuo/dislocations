@@ -114,11 +114,11 @@ struct {
 /*<         IRET=2 >*/
 	*iret = 2;
 /*<         GO TO 99 >*/
-	// goto L99;
-	printf("\n%s\n", STARS);
-	fprintf(stderr, "Error, positive z is specified!");
-	printf("\n%s\n", STARS);
-	exit(EXIT_FAILURE);
+	goto L99;
+	// printf("\n%s\n", STARS);
+	// fprintf(stderr, "Error, positive z is specified!");
+	// printf("\n%s\n", STARS);
+	//exit(EXIT_FAILURE);
 	// puts("**Note**: positive Z given!!!");
 	// printf("\n%s\n", STARS);
 /*<       ENDIF >*/

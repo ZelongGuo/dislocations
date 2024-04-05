@@ -9,8 +9,8 @@ extern "C"
 #include "okada_dc3d.h"
 #include "okada_disloc3d.h"
 
-
-static PyObject *okada_rect(PyObject *self, PyObject *args) {
+static PyObject *okada_rect(PyObject *self, PyObject *args)
+{
     // Initialize NumPy array object
     PyArrayObject *obs;          // ndarray of [n x 3], xyz coordinates of observation stations
     PyArrayObject *models;       // ndarray of [n x 10]  
@@ -18,97 +18,163 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     double nu; 		     // Poisson's ratio
     
     // Parse arguments from Pyhton 
-    if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu)) {
+    if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu))
+    {
     	PyErr_SetString(PyExc_TypeError, "Expected NumPy arrays and Python floats as input.");
     	return NULL;
     }
     /* if (!PyArray_Check(obs)) { return NULL;} */
-    
-    // obs and models must be a 2-D ndarray array, 1-D ndarray list and more dimensions are not allowed
-    if ((PyArray_NDIM(obs) != 2) || (PyArray_NDIM(models) != 2)) {
-        PyErr_SetString(PyExc_ValueError, "The observations and fault models must be 2-D ndarrays of [n x 3] and [n x 10]! If it is a 1-D ndarray list (usually 1 stations or 1 fault model), reshape it to 2-D!\n");
-        return NULL;
-    }
-
     // Check if obs has 3 columns and models has 10 columns
-    if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) {
+    if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) 
+    {
         PyErr_SetString(PyExc_ValueError, "The observations should be an array of [n x 3] and models should be [n x 10]!\n");
         return NULL;
     }
 
-    /* if you want accessing data with 1-D C array
-    double *c_models = (double *)PyArray_DATA(models);
-    double *c_obs = (double *)PyArray_DATA(obs);
-
     // Get the numbers of models and stations
     npy_intp nmodels = PyArray_SIZE(models) / 10;
-    npy_intp nobs    = PyArray_SIZE(obs) / 3;
+    npy_intp nobs    = PyArray_SIZE(obs)    / 3;
     printf("nmodels:  %ld\n", nmodels); 
     printf("nobs:  %ld\n", nobs); 
     
+    // Accessing data with 1-D C array 
+    double *c_models = (double *)PyArray_DATA(models);
+    double *c_obs = (double *)PyArray_DATA(obs);
+    // data type convert to double
+    for (int i =0; i<PyArray_SIZE(models); i++) {
+	c_models[i] = (double)c_models[i];
+	printf("%f ", *(c_models +i));
+    }
+    for (int i =0; i<PyArray_SIZE(obs); i++) {
+	c_obs[i] = (double)c_obs[i];
+	printf("%f ", *(c_obs +i));
+    }
+    
+
      printf("\n");
-    for (npy_intp i =0; i<nmodels; i++) {
+    for (int i =0; i<nmodels; i++) {
         for (int j=0; j< 10; j++) {
     	printf("%f  ", *(c_models + i*10 +j));
         }
         printf("\n");
     }
-    */
 
-    // Get the numbers of models and stations
-    npy_intp nmodels = PyArray_SIZE(models) / 10;
-    npy_intp nobs    = PyArray_SIZE(obs) / 3;
-    /*printf("nmodels:  %ld\n", nmodels); 
-     printf("nobs:  %ld\n", nobs); */
-
-    // Initialize C array (2-D)
-    double **c_models = NULL;
-    double **c_obs    = NULL;
-
-    //if (nmodels == 1) {c_models = PyArray_Newshaple}
-    PyArray_AsCArray((PyObject **)&models, &c_models, (npy_intp []){nmodels, 10}, 2, PyArray_DescrFromType(NPY_DOUBLE));
-    if (PyErr_Occurred()) {
-        PyErr_SetString(PyExc_RuntimeError, "Failed to convert NumPy array of Fault Models to C array.");
-        return NULL;
-    }
-
-    PyArray_AsCArray((PyObject **)&obs, &c_obs, (npy_intp[]){nobs, 3}, 2, PyArray_DescrFromType(NPY_DOUBLE));
-    if (PyErr_Occurred()) {
-        PyErr_SetString(PyExc_RuntimeError, "Failed to convert NumPy array of Observations Coordinates to C array.");
-        return NULL;
-    }
-
-    
-    // print 
-     printf("\n");
-    for (npy_intp i =0; i<nmodels; i++) {
-        for (int j=0; j< 10; j++) {
-    	printf("%f  ", c_models[i][j]);
-        }
-        printf("\n");
-    }
-    
-    printf("\n");
-    for (npy_intp i =0; i<nobs; i++) {
+    for (int i =0; i<nobs; i++) {
         for (int j=0; j< 3; j++) {
-    	printf("%f  ", c_obs[i][j]);
-        }
+	    printf("%f  ", *(c_obs + i*3 +j)); }
         printf("\n");
-    }  
+    }
 
-
-    // call disloc3d.c
-    //d sloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U, D, S, flags);
-
-    
     // free memory
     PyArray_Free((PyObject *)models, c_models);
     PyArray_Free((PyObject *)obs, c_obs);
-    
+
     // return a Python Object Pointer
     Py_RETURN_NONE;
     //return PyFloat_FromDouble(x + y);
 }
+
+//1 // ---------------------------------------------------------------------- 
+//1 
+//1 static PyObject *okada_rect(PyObject *self, PyObject *args) {
+//1     // Initialize NumPy array object
+//1     PyArrayObject *obs;          // ndarray of [n x 3], xyz coordinates of observation stations
+//1     PyArrayObject *models;       // ndarray of [n x 10]  
+//1     double mu; 		     // shear modulus
+//1     double nu; 		     // Poisson's ratio
+//1     
+//1     // Parse arguments from Pyhton 
+//1     if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu)) {
+//1     	PyErr_SetString(PyExc_TypeError, "Expected NumPy arrays and Python floats as input.");
+//1     	return NULL;
+//1     }
+//1     /* if (!PyArray_Check(obs)) { return NULL;} */
+//1     
+//1     // obs and models must be a 2-D ndarray array, 1-D ndarray list and more dimensions are not allowed
+//1     if ((PyArray_NDIM(obs) != 2) || (PyArray_NDIM(models) != 2)) {
+//1         PyErr_SetString(PyExc_ValueError, "The observations and fault models must be 2-D ndarrays of [n x 3] and [n x 10]! If it is a 1-D ndarray list (usually 1 stations or 1 fault model), reshape it to 2-D!\n");
+//1         return NULL;
+//1     }
+//1 
+//1     // Check if obs has 3 columns and models has 10 columns
+//1     if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) {
+//1         PyErr_SetString(PyExc_ValueError, "The observations should be an array of [n x 3] and models should be [n x 10]!\n");
+//1         return NULL;
+//1     }
+//1 
+//1     /* if you want accessing data with 1-D C array
+//1     double *c_models = (double *)PyArray_DATA(models);
+//1     double *c_obs = (double *)PyArray_DATA(obs);
+//1 
+//1     // Get the numbers of models and stations
+//1     npy_intp nmodels = PyArray_SIZE(models) / 10;
+//1     npy_intp nobs    = PyArray_SIZE(obs) / 3;
+//1     printf("nmodels:  %ld\n", nmodels); 
+//1     printf("nobs:  %ld\n", nobs); 
+//1     
+//1      printf("\n");
+//1     for (npy_intp i =0; i<nmodels; i++) {
+//1         for (int j=0; j< 10; j++) {
+//1     	printf("%f  ", *(c_models + i*10 +j));
+//1         }
+//1         printf("\n");
+//1     }
+//1     */
+//1 
+//1     // Get the numbers of models and stations
+//1     npy_intp nmodels = PyArray_SIZE(models) / 10;
+//1     npy_intp nobs    = PyArray_SIZE(obs) / 3;
+//1     /*printf("nmodels:  %ld\n", nmodels); 
+//1      printf("nobs:  %ld\n", nobs); */
+//1 
+//1     // Initialize C array (2-D)
+//1     double **c_models = NULL;
+//1     double **c_obs    = NULL;
+//1 
+//1     //if (nmodels == 1) {c_models = PyArray_Newshaple}
+//1     PyArray_AsCArray((PyObject **)&models, &c_models, (npy_intp []){nmodels, 10}, 2, PyArray_DescrFromType(NPY_DOUBLE));
+//1     if (PyErr_Occurred()) {
+//1         PyErr_SetString(PyExc_RuntimeError, "Failed to convert NumPy array of Fault Models to C array.");
+//1         return NULL;
+//1     }
+//1 
+//1     PyArray_AsCArray((PyObject **)&obs, &c_obs, (npy_intp[]){nobs, 3}, 2, PyArray_DescrFromType(NPY_DOUBLE));
+//1     if (PyErr_Occurred()) {
+//1         PyErr_SetString(PyExc_RuntimeError, "Failed to convert NumPy array of Observations Coordinates to C array.");
+//1         return NULL;
+//1     }
+//1 
+//1     
+//1     // print 
+//1      printf("\n");
+//1     for (npy_intp i =0; i<nmodels; i++) {
+//1         for (int j=0; j< 10; j++) {
+//1     	printf("%f  ", c_models[i][j]);
+//1         }
+//1         printf("\n");
+//1     }
+//1     
+//1     printf("\n");
+//1     for (npy_intp i =0; i<nobs; i++) {
+//1         for (int j=0; j< 3; j++) {
+//1     	printf("%f  ", c_obs[i][j]);
+//1         }
+//1         printf("\n");
+//1     }  
+//1 
+//1 
+//1     // call disloc3d.c
+//1     //d sloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U, D, S, flags);
+//1 
+//1     
+//1     // free memory
+//1     PyArray_Free((PyObject *)models, c_models);
+//1     PyArray_Free((PyObject *)obs, c_obs);
+//1     
+//1     // return a Python Object Pointer
+//1     Py_RETURN_NONE;
+//1     //return PyFloat_FromDouble(x + y);
+//1 }
 
 // ---------------------------------------------------------------------- 
 static PyObject *add(PyObject *self, PyObject *args) {
