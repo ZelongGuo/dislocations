@@ -9,14 +9,12 @@ Though strain is a dimensionless quantity, specifying dislocation unit same with
 **Point source model codes have not been tested yet, use them at your own risk.**
 ## 1. Compile and Install
 ### 1.1 Compile (by shared library/dynamic link library, dll)
-Using `setup.py` file:
+Using `setup.py` file, building shared library in current directory otherwise in ./build
 ```bash
-# build shared library in current directory otherwise in ./build
 python setup.py build --build-lib ./
 ```
-or, equivalently using gcc or clang compiler:
+or, equivalently using gcc or clang compiler, `-undefined dynamic_lookup` is essential for undefined symbols:
 ```bash
-# -undefined dynamic_looku is essential for undefined symbols
 gcc/clang src/dislocation.c src/okada_dc3d.c src/okada_disloc3d.c -fPIC -O2 -I<NumPy_core_include_path> -I<Python_include_path>/python3.XX -shared -undefined dynamic_lookup -o dislocation.so
 ```
 
