@@ -13,36 +13,36 @@ int main()
     // length, width, depth, dip, strike, easting, northing, str-slip, dip-selip. opening
     //  * easting, northing, depth (>=0, defined as the depth of fault upper center point, easting and northing likewise) length, width, strike, dip, str-slip, dip-selip, opening
 
-    double model[20] = {
-	440.58095043254673,3940.114839963042,15,80,50,50, 45, 0.01, 0.01, 0, 
-	440.58095043254673,3940.114839963042,15,80,50,50, 45, 0.01, 0.01, 0};
+    double model[2][10] = {
+	{440.58095043254673,3940.114839963042,15,80,50,50, 45, 0.01, 0.01, 0}, 
+	{440.58095043254673,3940.114839963042,15,80,50,50, 45, 0.01, 0.01, 0}};
 
     int nmodel = 2;
-    double observations[3] = {454, 3943, 0};
+    double observations[1][3] = {{454, 3943, 0}};
     int nobs = 1;
-    int flags[2] = {0, 0};
+    int flags[1][2] = {{0, 0}};
     double mu = 3e10;
     double nu = 0.25;
 
-    double U[3];
-    double D[9];
-    double S[9];
+    double U[1][3];
+    double D[1][9];
+    double S[1][9];
 
     disloc3d(model, nmodel, observations, nobs, mu, nu,
 	     U, D, S, flags);
 
     printf("\n%s\n", STARS);
-    printf("The ux is: %f, the uy is %f, the uz is %f.\n", U[0], U[1], U[2]);
+    printf("The ux is: %f, the uy is %f, the uz is %f.\n", U[0][0], U[0][1], U[0][2]);
     printf("\n%s\n", STARS);
-    printf("The uxx is: %f, the uxy is %f, the uxz is %f.\n", D[0], D[1], D[2]);
-    printf("The uyx is: %f, the uyy is %f, the uyz is %f.\n", D[3], D[4], D[5]);
-    printf("The uzx is: %f, the uzy is %f, the uzz is %f.\n", D[6], D[7], D[8]);
+    printf("The uxx is: %f, the uxy is %f, the uxz is %f.\n", D[0][0], D[0][1], D[0][2]);
+    printf("The uyx is: %f, the uyy is %f, the uyz is %f.\n", D[0][3], D[0][4], D[0][5]);
+    printf("The uzx is: %f, the uzy is %f, the uzz is %f.\n", D[0][6], D[0][7], D[0][8]);
     printf("\n%s\n", STARS);
-    printf("The d11 is: %f, the d12 is %f, the d13 is %f.\n", S[0], S[1], S[2]);
-    printf("The d21 is: %f, the d22 is %f, the d23 is %f.\n", S[3], S[4], S[5]);
-    printf("The d31 is: %f, the d32 is %f, the d33 is %f.\n", S[6], S[7], S[8]);
+    printf("The d11 is: %f, the d12 is %f, the d13 is %f.\n", S[0][0], S[0][1], S[0][2]);
+    printf("The d21 is: %f, the d22 is %f, the d23 is %f.\n", S[0][3], S[0][4], S[0][5]);
+    printf("The d31 is: %f, the d32 is %f, the d33 is %f.\n", S[0][6], S[0][7], S[0][8]);
     printf("\n%s\n", STARS);
-    printf("The flag1 is: %d, the flag2 is %d.\n", flags[0], flags[1]);
+    printf("The flag1 is: %d, the flag2 is %d.\n", flags[0][0], flags[0][1]);
     printf("\n%s\n", STARS);
 
     // printf("\n%s\n", STARS);
