@@ -8,12 +8,12 @@
 #define cosd(a) (cos((a)*DEG2RAD))
 #define sind(a) (sin((a)*DEG2RAD))
 
-void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, double mu, double nu, double (*U)[3], double (*D)[9], double (*S)[9], int flags[nobs][nmodel])
+void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu, double *U, double *D, double *S, int *flags)
 {
     /*	
      * Input Parameters: 
      *
-     * models: [nmodel * 10], a pointer of 1-D array having 10 elements
+     * models: [nmodel * 10], a pointer of 1-D array 
      *         easting, northing, depth (>=0, defined as the depth of fault upper center point, easting and northing likewise)
      *         length, width, strike, dip, str-slip, dip-selip, opening
      * obs   : [nobs * 3], a pointer of 1-D array, in which the Z <= 0
@@ -24,7 +24,7 @@ void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, doub
      * U     : [nobs x 3], DISPLACEMENT, the unit is same to those defined by dislocation slip in models
      * D     : [nobs x 9], 9 spatial derivatives of the displacements having 3 elements
      * S     : [nobs x 9], STRESS, the unit depends on that of shear modulus, 6 of them are independent
-     * flags : [nobs * nmodle], a pointer of an array
+     * flags : [nobs * nmodle], a pointer of an 1-D array
      *         0 normal; 
      *         1 the Z value of the obs > 0
      *         10 the depth of the fault upper center point reached to surface (depth < 0)
@@ -43,6 +43,8 @@ void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, doub
     int flag2;
     int iret;
 
+    double *model;
+    double *obs;
     double strike, dip;
     double cs, ss;
     double cd, sd; 
@@ -67,10 +69,11 @@ void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, doub
 
     for (i = 0; i < nobs; i++)
     {
+	obs = obss + 3*i;
 	flag1 = 0;
 	flag2 = 0;
 
-	if (obs[i][2] > 0)
+	if (*(obs + 2) > 0)
 	{
 	    // positive z value of the station is given, let flag = 1
 	    flag1 = 1;
@@ -88,41 +91,42 @@ void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, doub
 	
 	for (j = 0; j < nmodel; j++)
 	{
-	    strike = models[j][5] - 90.0;
+	    model = models + 10*j;
+	    strike = model[5] - 90.0;
             cs     = cosd(strike);
             ss     = sind(strike);
             cs2    = cs * cs;
             ss2    = ss * ss;
             csss   = cs * ss;
 
-	    dip    = models[j][6];
+	    dip    = model[6];
             cd     = cosd(dip);
             sd     = sind(dip);
 
-            disl1  = models[j][7];
-            disl2  = models[j][8];
-            disl3  = models[j][9];
+            disl1  = model[7];
+            disl2  = model[8];
+            disl3  = model[9];
 	    
 	    // the fault reference point is upper center point
 	    // the depth is the depth of upper center point
-	    depth  =        models[j][2];
-            al1    = -0.5 * models[j][3];
-            al2    =  0.5 * models[j][3];
-            aw1    = -1.0 * models[j][4];
+	    depth  =        model[2];
+            al1    = -0.5 * model[3];
+            al2    =  0.5 * model[3];
+            aw1    = -1.0 * model[4];
             aw2    =  0.0;
 
             // Can also use R = [cs ss 0; -ss cs 0; 0 0 1].
             // Apply some translations to transfer Observation Cartesian to Fault Coordinate
-	    x = cs * (obs[i][0] - models[j][0]) - ss * (obs[i][1] - models[j][1]);
-            y = ss * (obs[i][0] - models[j][0]) + cs * (obs[i][1] - models[j][1]);
-            z = obs[i][2];
+            x = cs * (obs[0] - model[0]) - ss * (obs[1] - model[1]);
+            y = ss * (obs[0] - model[0]) + cs * (obs[1] - model[1]);
+            z = obs[2];
 
-            if ((models[j][3] <= 0.0) || (models[j][4] <= 0.0) || (depth < 0.0)) {
+            if ((model[3] <= 0.0) || (model[4] <= 0.0) || (depth < 0.0)) {
 		flag2 = 10;
 	    	printf("\n%s\n", STARS);
 	    	fprintf(stderr, "Error, unphysical model! Check fault length, width and the center point depth on upper fault edge should all be positive values.\n");
 	    	fprintf(stderr, "Observation Station ID: %d, Fault Patch ID: %d\n", i, j);
-	    	fprintf(stderr, "Patch length: %f, width: %f, upper center depth: %f.\n", models[j][3], models[j][4], depth);
+	    	fprintf(stderr, "Patch length: %f, width: %f, upper center depth: %f.\n", model[3], model[4], depth);
 	    	printf("\n%s\n", STARS);
 	    	// exit(EXIT_FAILURE);
 	    }
@@ -153,7 +157,7 @@ void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, doub
 	     */
 	    if (iret == 1) {iret = 100;}
 	    if (iret == 2) {iret = iret - 2;}
-	    *(*(flags+i) + j) = flag1 + flag2 + iret;
+	    *(flags + i*nmodel + j) = flag1 + flag2 + iret;
 
             // rotate then add
             uxt +=  cs*ux + ss*uy;
@@ -176,44 +180,50 @@ void disloc3d(double (*models)[10], int nmodel, double (*obs)[3], int nobs, doub
 	}
 
 	// Calculate U, S, D
-        U[i][0] = uxt;
-        U[i][1] = uyt;
-        U[i][2] = uzt;
+	U += 3*i;
+	D += 9*i;
+	S += 9*i;
+	
+        U[0] = uxt;
+        U[1] = uyt;
+        U[2] = uzt;
         
-        D[i][0] = uxxt;  // d11
-        D[i][1] = uxyt;  // d12
-        D[i][2] = uxzt;  // d13
-        D[i][3] = uyxt;  // d21
-        D[i][4] = uyyt;  // d22
-        D[i][5] = uyzt;  // d23
-        D[i][6] = uzxt;  // d31
-        D[i][7] = uzyt;  // d32
-        D[i][8] = uzzt;  // d33
+        D[0] = uxxt;  // d11
+        D[1] = uxyt;  // d12
+        D[2] = uxzt;  // d13
+        D[3] = uyxt;  // d21
+        D[4] = uyyt;  // d22
+        D[5] = uyzt;  // d23
+        D[6] = uzxt;  // d31
+        D[7] = uzyt;  // d32
+        D[8] = uzzt;  // d33
 			 //
 	// if you want to calculate Strains ...
 	// symmetry with 6 independent elements
-	// S_[i][0] = D[i][0];                    // s_11
-	// S_[i][1] = 0.5 * (D[i][1] + D[i][3]);  // s_12
-	// S_[i][2] = 0.5 * (D[i][2] + D[i][6]);  // s_13
-	// S_[i][3] = 0.5 * (D[i][1] + D[i][3]);  // s_21
-	// S_[i][4] = D[i][4]; 			  // s_22
-	// S_[i][5] = 0.5 * (D[i][5] + D[i][7]);  // s_23
-	// S_[i][6] = 0.5 * (D[i][2] + D[i][6]);  // s_31
-	// S_[i][7] = 0.5 * (D[i][5] + D[i][7]);  // s_32
-	// S_[i][8] = D[i][8]
+	// S_ += 9*i;
+	// S_[0] = D[0];                 // s_11
+	// S_[1] = 0.5 * (D[1] + D[3]);  // s_12
+	// S_[2] = 0.5 * (D[2] + D[6]);  // s_13
+	// S_[3] = 0.5 * (D[1] + D[3]);  // s_21
+	// S_[4] = D[i][4];  	         // s_22
+	// S_[5] = 0.5 * (D[5] + D[7]);  // s_23
+	// S_[6] = 0.5 * (D[2] + D[6]);  // s_31
+	// S_[7] = 0.5 * (D[5] + D[7]);  // s_32
+	// S_[8] = D[8] 		 // S-33
 	
         // calculate stresses, symmetry with 6 independent elements
-        theta   = D[i][0] + D[i][4] + D[i][8];
-        S[i][0] = lambda*theta + 2*mu*D[i][0];  // s11
-        S[i][1] = mu*(D[i][1] + D[i][3]);       // s12
-        S[i][2] = mu*(D[i][2] + D[i][6]);       // s13
-	S[i][3] = mu*(D[i][1] + D[i][3]);       // s21
-        S[i][4] = lambda*theta + 2*mu*D[i][4];  // s22
-        S[i][5] = mu*(D[i][5] + D[i][7]);       // s23
-        S[i][6] = mu*(D[i][2] + D[i][6]);       // s31
-	S[i][7] = mu*(D[i][5] + D[i][7]); 	// s32 
-	S[i][8] = lambda*theta + 2*mu*D[i][8];  // s33 
+        theta   = D[0] + D[4] + D[8];
+        S[0] = lambda*theta + 2*mu*D[0];  // s11
+        S[1] = mu*(D[1] + D[3]);          // s12
+        S[2] = mu*(D[2] + D[6]);          // s13
+	S[3] = mu*(D[1] + D[3]);          // s21
+        S[4] = lambda*theta + 2*mu*D[4];  // s22
+        S[5] = mu*(D[5] + D[7]);          // s23
+        S[6] = mu*(D[2] + D[6]);          // s31
+	S[7] = mu*(D[5] + D[7]); 	  // s32 
+	S[8] = lambda*theta + 2*mu*D[8];  // s33 
 
     }
 }
+
 
