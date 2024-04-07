@@ -17,7 +17,7 @@ python setup.py build --build-lib ./
 or, equivalently using gcc or clang compiler:
 ```bash
 # -undefined dynamic_looku is essential for undefined symbols
-gcc/clang src/dislocation.c src/okada_dc3d.c src/okada_disloc3d.c -fPIC -O2 -I/Users/zelong/opt/miniconda3/envs/temp/lib/python3.11/site-packages/numpy/core/include -I/Users/zelong/opt/miniconda3/envs/temp/include/python3.11 -shared -undefined dynamic_lookup -o dislocation.so
+gcc/clang src/dislocation.c src/okada_dc3d.c src/okada_disloc3d.c -fPIC -O2 -I<NumPy_core_include_path> -I<Python_include_path>/python3.XX -shared -undefined dynamic_lookup -o dislocation.so
 ```
 
 ### 1.2 Installation (by installing)
@@ -31,6 +31,9 @@ Codes:
 okada_wrapper Ben  
 okada4py Romain   
 dc3d from stanford
+
+> Zelong Guo, Potadam  
+zelong.guo@outlook.com
 
 
 
