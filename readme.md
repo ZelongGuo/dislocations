@@ -1,5 +1,5 @@
 # Dislocation
-**Still under developing...**
+**Still Under Developing...**  
 Calculating elastic deformation from dislocation sources
 
 Mind the unit: recommend the International System of Units.
