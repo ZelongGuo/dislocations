@@ -131,15 +131,7 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 	    	// exit(EXIT_FAILURE);
 	    }
 	    
-	    dc3d_(&alpha, &x, &y, &z,
-	          &depth, &dip,
-	          &al1, &al2, &aw1, &aw2,
-	          &disl1, &disl2, &disl3,
-                  &ux,  &uy,  &uz, 
-                  &uxx, &uyx, &uzx,
-                  &uxy, &uyy, &uzy,
-                  &uxz, &uyz, &uzz,
-                  &iret);
+	    dc3d_(&alpha, &x, &y, &z, &depth, &dip, &al1, &al2, &aw1, &aw2,&disl1, &disl2, &disl3, &ux,  &uy,  &uz, &uxx, &uyx, &uzx, &uxy, &uyy, &uzy, &uxz, &uyz, &uzz, &iret);
 	    // printf("alpha: %f, x:%f, y:%f, z:%f, depth:%f, dip:%f, al1:%f, al2:%f, aw1:%f, aw2:%f, dis1:%f, dis2:%f, dis3:%f\n", alpha, x, y, z, depth, dip, al1, al2, aw1, aw2, disl1, disl2, disl3);
 
 

@@ -12,12 +12,12 @@ extern "C"
 static PyObject *okada_rect(PyObject *self, PyObject *args)
 {
     // Initialize NumPy array object
-    PyArrayObject *obs;          // ndarray of [n x 3], xyz coordinates of observation stations
-    PyArrayObject *models;       // ndarray of [n x 10]  
-    PyArrayObject *obs_;          // ndarray of [n x 3], xyz coordinates of observation stations
-    PyArrayObject *models_;       // ndarray of [n x 10]  
-    double mu; 		     // shear modulus
-    double nu; 		     // Poisson's ratio
+    PyArrayObject *obs     = NULL;       // ndarray of [n x 3], xyz coordinates of observation stations
+    PyArrayObject *models  = NULL;       // ndarray of [n x 10]  
+    PyArrayObject *obs_    = NULL;       // ndarray of [n x 3], xyz coordinates of observation stations
+    PyArrayObject *models_ = NULL;       // ndarray of [n x 10]  
+    double mu; 		        	 // shear modulus
+    double nu; 		        	 // Poisson's ratio
     
     // Parse arguments from Pyhton and make data type check
     if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu))
@@ -30,6 +30,10 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
     if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) 
     {
         PyErr_SetString(PyExc_ValueError, "The observations should be an array of [n x 3] and models should be [n x 10]!\n");
+	Py_DECREF(obs);
+	Py_DECREF(obs_);
+	Py_DECREF(models);
+	Py_DECREF(models_);
         return NULL;
     }
 
@@ -41,12 +45,17 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
 	if (obs_ == NULL) 
 	{
 	    PyErr_SetString(PyExc_ValueError, "Converting the observations to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+	    Py_DECREF(obs);
+	    Py_XDECREF(obs_);
+	    Py_DECREF(models);
+	    Py_DECREF(models_);
 	    return NULL;
 	}
     }
     else
     {
-	obs_ = obs;
+	obs_ = obs; 
+	Py_INCREF(obs);
     }
 
 
@@ -57,12 +66,17 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
 	if (models_ == NULL) 
 	{
 	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+	    Py_DECREF(obs);
+	    Py_XDECREF(obs_);
+	    Py_DECREF(models);
+	    Py_XDECREF(models_);
 	    return NULL;
 	}
     }
     else
     {
 	models_ = models;
+	Py_INCREF(models);
     }
 
     // Get the numbers of models and stations
@@ -90,6 +104,14 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
     if ((U == NULL) || (D == NULL) || (S == NULL) || (flags == NULL)) 
     {
 	PyErr_SetString(PyExc_MemoryError, "Failed to allocate memories for U, D, S and falgs!");
+	Py_XDECREF(U);
+	Py_XDECREF(D);
+	Py_XDECREF(S);
+	Py_XDECREF(flags);
+	Py_DECREF(obs);
+	Py_DECREF(obs_);
+	Py_DECREF(models);
+	Py_DECREF(models_);
 	return NULL;
     }
 
@@ -122,10 +144,22 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
     */
     
     // free memory
-   // Py_DECREF(U);
-   // Py_DECREF(D);
-   // Py_DECREF(S);
-   // Py_DECREF(flags);
+    Py_DECREF(obs);
+    Py_DECREF(obs_);
+    Py_DECREF(models);
+    Py_DECREF(models_);
+    Py_DECREF(U);
+    Py_DECREF(D);
+    Py_DECREF(S);
+    Py_DECREF(flags);
+    obs     = NULL;
+    obs_    = NULL;
+    models  = NULL;
+    models_ = NULL;
+    U       = NULL;
+    D       = NULL;
+    S       = NULL;
+    flags   = NULL;
 
     // return a Python Object Pointer
     //Py_RETURN_NONE;
