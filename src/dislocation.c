@@ -4,13 +4,13 @@ extern "C"
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define PY_SSIZE_T_CLEAN
+#include <assert.h>
 #include "Python.h"
 #include "numpy/arrayobject.h"
 #include "okada_dc3d.h"
 #include "okada_disloc3d.h"
 
-static PyObject *okada_rect(PyObject *self, PyObject *args)
-{
+static PyObject *okada_rect(PyObject *self, PyObject *args) {
     // Initialize NumPy array object
     PyArrayObject *obs     = NULL;       // ndarray of [n x 3], xyz coordinates of observation stations
     PyArrayObject *models  = NULL;       // ndarray of [n x 10]  
@@ -20,52 +20,27 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
     double nu; 		        	 // Poisson's ratio
     
     // Parse arguments from Pyhton and make data type check
-    if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu))
-    {
+    if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu)) {
     	PyErr_SetString(PyExc_TypeError, "Expected NumPy arrays and Python floats as input.");
     	return NULL;
     }
 
     // Check if obs has 3 columns and models has 10 columns
-    if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) 
-    {
+    if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) {
         PyErr_SetString(PyExc_ValueError, "The observations should be an array of [n x 3] and models should be [n x 10]!\n");
 	Py_DECREF(obs);
-	Py_DECREF(obs_);
+	Py_XDECREF(obs_);
 	Py_DECREF(models);
-	Py_DECREF(models_);
+	Py_XDECREF(models_);
         return NULL;
     }
 
     // Convert data type to double and C contiguous if needed
-    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) 
-    {
+    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
 	printf("Converting obs to double and C contiguous...\n");
 	obs_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)obs, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
-	if (obs_ == NULL) 
-	{
+	if (obs_ == NULL) {
 	    PyErr_SetString(PyExc_ValueError, "Converting the observations to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
-	    Py_DECREF(obs);
-	    Py_XDECREF(obs_);
-	    Py_DECREF(models);
-	    Py_DECREF(models_);
-	    return NULL;
-	}
-    }
-    else
-    {
-	obs_ = obs; 
-	Py_INCREF(obs);
-    }
-
-
-    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models)) 
-    {
-	printf("Converting models ton double and C contiguous...\n");
-	models_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
-	if (models_ == NULL) 
-	{
-	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
 	    Py_DECREF(obs);
 	    Py_XDECREF(obs_);
 	    Py_DECREF(models);
@@ -73,8 +48,25 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
 	    return NULL;
 	}
     }
-    else
-    {
+    else {
+	obs_ = obs; 
+	Py_INCREF(obs);
+    }
+
+
+    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models)) {
+	printf("Converting models ton double and C contiguous...\n");
+	models_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
+	if (models_ == NULL) {
+	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+	    Py_DECREF(obs);
+	    Py_DECREF(obs_);
+	    Py_DECREF(models);
+	    Py_XDECREF(models_);
+	    return NULL;
+	}
+    }
+    else {
 	models_ = models;
 	Py_INCREF(models);
     }
@@ -101,8 +93,7 @@ static PyObject *okada_rect(PyObject *self, PyObject *args)
     D     = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
     S     = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
     flags = (PyArrayObject *)PyArray_ZEROS(1, &dims3, NPY_INT, 0);
-    if ((U == NULL) || (D == NULL) || (S == NULL) || (flags == NULL)) 
-    {
+    if ((U == NULL) || (D == NULL) || (S == NULL) || (flags == NULL)) {
 	PyErr_SetString(PyExc_MemoryError, "Failed to allocate memories for U, D, S and falgs!");
 	Py_XDECREF(U);
 	Py_XDECREF(D);
