@@ -114,7 +114,7 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     // call disloc3d.c
     disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U_data, D_data, S_data, flags_data);
 
-    PyObject *results = Py_BuildValue("(OOOO)", U, D, S, flags);
+    PyObject *results = Py_BuildValue("(NNNN)", U, D, S, flags);
 
     /*
     printf("\n");
@@ -139,18 +139,10 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     Py_DECREF(obs_);
     Py_DECREF(models);
     Py_DECREF(models_);
-    Py_DECREF(U);
-    Py_DECREF(D);
-    Py_DECREF(S);
-    Py_DECREF(flags);
     obs     = NULL;
     obs_    = NULL;
     models  = NULL;
     models_ = NULL;
-    U       = NULL;
-    D       = NULL;
-    S       = NULL;
-    flags   = NULL;
 
     // return a Python Object Pointer
     //Py_RETURN_NONE;
