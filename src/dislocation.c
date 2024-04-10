@@ -40,6 +40,8 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
 	return NULL;
     }
 
+    // 可能是double 到 npy_double 不一致导致的
+
 //    // Convert data type to double and C contiguous if needed
 //    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
 //	printf("Converting obs to double and C contiguous...\n");
@@ -79,8 +81,8 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     // printf("nobs:  %ld\n", nobs); 
     
     // Accessing data with 1-D C array 
-    double *c_models = (double *)PyArray_DATA(models_);
-    double *c_obs = (double *)PyArray_DATA(obs_);
+    npy_double *c_models = (npy_double *)PyArray_DATA(models_);
+    npy_double *c_obs = (npy_double *)PyArray_DATA(obs_);
 
     // Initialize U, D, S and flags
     PyArrayObject *U;
@@ -105,10 +107,10 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
 	return NULL;
     }
 
-    double *U_data = (double *)PyArray_DATA(U);
-    double *D_data = (double *)PyArray_DATA(D);
-    double *S_data = (double *)PyArray_DATA(S);
-    int *flags_data = (int *)PyArray_DATA(flags);
+    npy_double *U_data = (npy_double *)PyArray_DATA(U);
+    npy_double *D_data = (npy_double *)PyArray_DATA(D);
+    npy_double *S_data = (npy_double *)PyArray_DATA(S);
+    npy_int *flags_data =   (npy_int *)PyArray_DATA(flags);
 
     // call disloc3d.c
     disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U_data, D_data, S_data, flags_data);
