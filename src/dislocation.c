@@ -19,7 +19,7 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     double mu; 		        	 // shear modulus
     double nu; 		        	 // Poisson's ratio
     
-    // Parse arguments from Pyhton and make data type check
+    // Parse arguments from Python and make data type check, borrowed references for "O"
     if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu)) {
     	PyErr_SetString(PyExc_TypeError, "Expected NumPy arrays and Python floats as input.");
     	return NULL;
@@ -28,48 +28,49 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     // Check if obs has 3 columns and models has 10 columns
     if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) {
         PyErr_SetString(PyExc_ValueError, "The observations should be an array of [n x 3] and models should be [n x 10]!\n");
-	Py_DECREF(obs);
-	Py_XDECREF(obs_);
-	Py_DECREF(models);
-	Py_XDECREF(models_);
         return NULL;
     }
 
-    // Convert data type to double and C contiguous if needed
-    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
-	printf("Converting obs to double and C contiguous...\n");
-	obs_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)obs, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
-	if (obs_ == NULL) {
-	    PyErr_SetString(PyExc_ValueError, "Converting the observations to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
-	    Py_DECREF(obs);
-	    Py_XDECREF(obs_);
-	    Py_DECREF(models);
-	    Py_XDECREF(models_);
-	    return NULL;
-	}
-    }
-    else {
-	obs_ = obs; 
-	Py_INCREF(obs);
+    // C contiguous, double and aligned, a new reference or a brand new array would be returned
+    obs_    = (PyArrayObject *)PyArray_FROM_OTF((PyObject *)obs, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (obs_ == NULL) return NULL;
+    models_ = (PyArrayObject *)PyArray_FROM_OTF((PyObject *)models, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (models_ == NULL) { 
+	Py_DECREF(obs_);
+	return NULL;
     }
 
-
-    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models)) {
-	printf("Converting models ton double and C contiguous...\n");
-	models_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
-	if (models_ == NULL) {
-	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
-	    Py_DECREF(obs);
-	    Py_DECREF(obs_);
-	    Py_DECREF(models);
-	    Py_XDECREF(models_);
-	    return NULL;
-	}
-    }
-    else {
-	models_ = models;
-	Py_INCREF(models);
-    }
+//    // Convert data type to double and C contiguous if needed
+//    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
+//	printf("Converting obs to double and C contiguous...\n");
+//	obs_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)obs, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
+//	if (obs_ == NULL) {
+//	    PyErr_SetString(PyExc_ValueError, "Converting the observations to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+//	    Py_XDECREF(obs_);
+//	    Py_XDECREF(models_);
+//	    return NULL;
+//	}
+//    }
+//    else {
+//	Py_INCREF(obs);
+//	obs_ = obs; 
+//    }
+//
+//
+//    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models)) {
+//	printf("Converting models ton double and C contiguous...\n");
+//	models_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
+//	if (models_ == NULL) {
+//	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+//	    Py_DECREF(obs_);
+//	    Py_XDECREF(models_);
+//	    return NULL;
+//	}
+//    }
+//    else {
+//	models_ = models;
+//	Py_INCREF(models);
+//    }
 
     // Get the numbers of models and stations
     npy_intp nmodels = PyArray_SIZE(models_) / 10;
@@ -99,9 +100,7 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
 	Py_XDECREF(D);
 	Py_XDECREF(S);
 	Py_XDECREF(flags);
-	Py_DECREF(obs);
 	Py_DECREF(obs_);
-	Py_DECREF(models);
 	Py_DECREF(models_);
 	return NULL;
     }
@@ -135,13 +134,9 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     */
     
     // free memory
-    Py_DECREF(obs);
     Py_DECREF(obs_);
-    Py_DECREF(models);
     Py_DECREF(models_);
-    obs     = NULL;
     obs_    = NULL;
-    models  = NULL;
     models_ = NULL;
 
     // return a Python Object Pointer
