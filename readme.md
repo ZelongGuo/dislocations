@@ -19,6 +19,7 @@ or, equivalently using gcc or clang compiler, `-undefined dynamic_lookup` is ess
 ```bash
 gcc/clang src/dislocation.c src/okada_dc3d.c src/okada_disloc3d.c -fPIC -O2 -I<NumPy_core_include_path> -I<Python_include_path>/python3.XX -shared -undefined dynamic_lookup -o dislocation.so
 ```
+Then you can copy the shared library `.so` file to your site-packages folder of your current python environment, or to your working directory. Then you could import the module successfully.
 
 ### 1.2 Installation (by installing)
 `python setup.py install` has been deprecated, please use `pip install **`
@@ -28,8 +29,8 @@ Okada, Y., 1992, Internal deformation due to shear and tensile faults in a half-
 
 ## More Useful Resources:
 Codes:  
-okada_wrapper Ben  
-okada4py Romain   
+okada_wrapper   
+okada4py   
 dc3d from stanford
 
 > Zelong Guo, Potadam  

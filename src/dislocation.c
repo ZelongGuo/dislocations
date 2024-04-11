@@ -7,8 +7,9 @@ extern "C"
 #include <assert.h>
 #include "Python.h"
 #include "numpy/arrayobject.h"
-#include "okada_dc3d.h"
-#include "okada_disloc3d.h"
+#include "okada.h"
+//#include "okada_dc3d.h"
+//#include "okada_disloc3d.h"
 
 static PyObject *okada_rect(PyObject *self, PyObject *args) {
     // Initialize NumPy array object
@@ -46,37 +47,39 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     }
 
 
-//    // Convert data type to double and C contiguous if needed
-//    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
-//	printf("Converting obs to double and C contiguous...\n");
-//	obs_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)obs, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
-//	if (obs_ == NULL) {
-//	    PyErr_SetString(PyExc_ValueError, "Converting the observations to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
-//	    Py_XDECREF(obs_);
-//	    Py_XDECREF(models_);
-//	    return NULL;
-//	}
-//    }
-//    else {
-//	Py_INCREF(obs);
-//	obs_ = obs; 
-//    }
-//
-//
-//    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models)) {
-//	printf("Converting models ton double and C contiguous...\n");
-//	models_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
-//	if (models_ == NULL) {
-//	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
-//	    Py_DECREF(obs_);
-//	    Py_XDECREF(models_);
-//	    return NULL;
-//	}
-//    }
-//    else {
-//	models_ = models;
-//	Py_INCREF(models);
-//    }
+    /*
+    // Convert data type to double and C contiguous if needed
+    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
+	printf("Converting obs to double and C contiguous...\n");
+	obs_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)obs, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
+	if (obs_ == NULL) {
+	    PyErr_SetString(PyExc_ValueError, "Converting the observations to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+	    Py_XDECREF(obs_);
+	    Py_XDECREF(models_);
+	    return NULL;
+	}
+    }
+    else {
+	Py_INCREF(obs);
+	obs_ = obs; 
+    }
+
+
+    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models)) {
+	printf("Converting models ton double and C contiguous...\n");
+	models_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2, NPY_ARRAY_C_CONTIGUOUS);
+	if (models_ == NULL) {
+	    PyErr_SetString(PyExc_ValueError, "Converting the models to double type and C contiguous failed! You may also need check its dimension which should be 1-D or 2-D!\n");
+	    Py_DECREF(obs_);
+	    Py_XDECREF(models_);
+	    return NULL;
+	}
+    }
+    else {
+	models_ = models;
+	Py_INCREF(models);
+    }
+    */
 
     // Get the numbers of models and stations
     npy_intp nmodels = PyArray_SIZE(models_) / 10;

@@ -4,37 +4,45 @@
 #include "okada.h"
 //#include "okada_dc3d0.c"
 
+// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// TODO ...
+// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
 
 #define DEG2RAD (M_PI / 180)
 #define cosd(a) (cos((a)*DEG2RAD))
 #define sind(a) (sin((a)*DEG2RAD))
 
-void disloc3d0(double *model,
-	       double *observations, int nobs, 
-	       double mu, double nu,
-	       double *U, double *D, double *S,
-               int *flags)
+void disloc3d0(double *model, double *observations, int nobs, 
+	       double mu, double nu, double *U, double *D, double *S, int *flags)
 {
      /*
-     *
-     * Note: for only one point source and many observations.
-     * 
-     * */
+     * input parameters:
+     * model: nmodles * 6, [depth dip pot1, pot2, pot3, pot4]
+     *    - depth: depth of point source (positive value)
+     *    - dip: dip angle of source, degree
+     *    - pot1: strike-slip (moment of double-couple) / mu
+     *    - pot2: dip-slip (moment of double-couple) / mu 
+     *    - pot3: tensile (moment of isotropic part of dipole) / lambda
+     *    - pot4: explosive (dilatational, moment of dipole) / mu
+     * obs: nobs * 3, [easting, northing, depth] (negative values)
+     *    - easting
+     *    - northing
+     *    - z: negative value
+     * mu : Shear modulus
+     * nu : Poisson's ratio
     
-    // input parameters:
-    // model: 1 * 6
-    // depth (positive value), dip (degree), pot1, pot2, pot3, pot4
-    // obs: nobs * 3
-    // easting, northing, depth (negative values)
-    // mu : Shear modulus
-    // nu : Poisson's ratio
-
-    
-    // output parameters:
-    // U: DISPLACEMENT
-    // D: STRAIN
-    // S: STRESS
-    // flag
+     * output parameters:
+     * U: DISPLACEMENT
+     * D: DERIVATIVES OF DISPLACEMENT
+     * S: STRESS
+     * flag
+     *     - 0: normal
+     *     - 1: singular point, when the observation point coincides to the source position
+     *     - 2: positive z value 
+    */
 
     double lambda; 
     double alpha;
@@ -146,32 +154,29 @@ void disloc3d0(double *model,
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
- // int main()
- // {
- // 	double alpha = 0.6, x = 1.0, y = 1.0, z = -1.0;
- // 	double depth = 1.0, dip = 90.0;
- // 	double pot1 = 1.0, pot2 = 2.0, pot3 = 3.0, pot4 = 4.0;
- // 	double ux0, uy0, uz0, uxx0, uyx0, uzx0, uxy0, uyy0, uzy0, uxz0, uyz0, uzz0;
- // 	int iret0;
- // 
- // 	printf("+-+-+-+-+-+-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-+\n");
- // 	printf("+-+-+-+-+-+-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-+\n");
- // 
- // 	dc3d0_(&alpha, &x, &y, &z, &depth, &dip,
- // 		&pot1, &pot2, &pot3, &pot4,
- // 	        &ux0, &uy0, &uz0, 
- // 	        &uxx0, &uyx0, &uzx0,
- // 	        &uxy0, &uyy0, &uzy0,
- // 	        &uxz0, &uyz0, &uzz0,
- // 	        &iret0);
- // 
- // 	printf("The ux0 is: %f, the uy0 is %f, the uz0 is %f.\n", ux0, uy0, uz0);
- //         printf("The uxx0 is: %f, the uyx0 is %f, the uzx0 is %f.\n", uxx0, uyx0, uzx0);
- //         printf("The uxy0 is: %f, the uyy0 is %f, the uzy0 is %f.\n", uxy0, uyy0, uzy0);
- //         printf("The uxz0 is: %f, the uyz0 is %f, the uzz0 is %f.\n", uxz0, uyz0, uzz0);
- //         printf("The iret is: %d\n", iret0);
- // 
- // 	return 0;
- // 
- // }
+/*
+int main()
+{
+	double alpha = 0.6, x = 1.0, y = 1.0, z = -1.0;
+	double depth = 1.0, dip = 90.0;
+	double pot1 = 1.0, pot2 = 2.0, pot3 = 3.0, pot4 = 4.0;
+	double ux0, uy0, uz0, uxx0, uyx0, uzx0, uxy0, uyy0, uzy0, uxz0, uyz0, uzz0;
+	int iret0;
 
+	printf("+-+-+-+-+-+-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-+\n");
+	printf("+-+-+-+-+-+-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-++-+-+-+-+\n");
+
+	dc3d0_(&alpha, &x, &y, &z, &depth, &dip, &pot1, &pot2, &pot3, &pot4,
+	        &ux0, &uy0, &uz0, &uxx0, &uyx0, &uzx0,
+	        &uxy0, &uyy0, &uzy0, &uxz0, &uyz0, &uzz0, &iret0);
+
+	printf("The ux0 is: %f, the uy0 is %f, the uz0 is %f.\n", ux0, uy0, uz0);
+        printf("The uxx0 is: %f, the uyx0 is %f, the uzx0 is %f.\n", uxx0, uyx0, uzx0);
+        printf("The uxy0 is: %f, the uyy0 is %f, the uzy0 is %f.\n", uxy0, uyy0, uzy0);
+        printf("The uxz0 is: %f, the uyz0 is %f, the uzz0 is %f.\n", uxz0, uyz0, uzz0);
+        printf("The iret is: %d\n", iret0);
+
+	return 0;
+
+}
+*/
