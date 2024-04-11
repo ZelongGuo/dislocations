@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "okada_dc3d.h"
+#include "okada.h"
 
 /* Common Block Declarations */
 typedef double doublereal;

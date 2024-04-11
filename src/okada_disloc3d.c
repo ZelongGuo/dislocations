@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "okada_dc3d.h"
-#include "okada_disloc3d.h"
+//#include "okada_dc3d.h"
+//#include "okada_disloc3d.h"
+#include "okada.h"
 
 #define DEG2RAD (M_PI / 180)
 #define cosd(a) (cos((a)*DEG2RAD))
 #define sind(a) (sin((a)*DEG2RAD))
 
-void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu, double *U, double *D, double *S, int *flags)
+void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu, double *U, double *D, double *S, double *E, int *flags)
 {
     /*	
      * Input Parameters: 
@@ -16,7 +17,7 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
      * models: [nmodel * 10], a pointer of 1-D array 
      *         easting, northing, depth (>=0, defined as the depth of fault upper center point, easting and northing likewise)
      *         length, width, strike, dip, str-slip, dip-selip, opening
-     * obs   : [nobs * 3], a pointer of 1-D array, in which the Z <= 0
+     * obss  : [nobs * 3], a pointer of 1-D array, in which the Z <= 0
      * mu    : shear modulus
      * nu    : Poisson's ratio
      *
@@ -24,6 +25,7 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
      * U     : [nobs x 3], DISPLACEMENT, the unit is same to those defined by dislocation slip in models
      * D     : [nobs x 9], 9 spatial derivatives of the displacements having 3 elements
      * S     : [nobs x 9], STRESS, the unit depends on that of shear modulus, 6 of them are independent
+     * E     : [nobs x 9], STRAIN, dimensionless, 6 of them are independent
      * flags : [nobs * nmodle], a pointer of an 1-D array
      *         0 normal; 
      *         1 the Z value of the obs > 0
@@ -43,8 +45,10 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
     int flag2;
     int iret;
 
-    double *model;
-    double *obs;
+    double *model = NULL;
+    double *obs = NULL;
+    double *Uout = NULL, *Dout = NULL, *Sout = NULL, *Eout = NULL;
+    int *flags_out = NULL;
     double strike, dip;
     double cs, ss;
     double cd, sd; 
@@ -73,15 +77,16 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 	flag1 = 0;
 	flag2 = 0;
 
-	if (*(obs + 2) > 0)
+	if (*(obs + 2) > 0.0)
 	{
 	    // positive z value of the station is given, let flag = 1
 	    flag1 = 1;
 	    printf("\n%s\n", STARS);
-  	    fprintf(stderr, "Error, Observation station (ID: %d) has positive depth!" ,i);
+  	    fprintf(stderr, "Error, Observation station (ID: %d) has positive depth %f, output set to 0, also see flags!" ,i, *(obs + 2));
 	    printf("\n%s\n", STARS);
 	    // exit(EXIT_FAILURE);
 	}
+	// printf("x = %f, y = %f, z = %f\n", obs[0], obs[1], obs[2]);
 	
 	// Initialized 
 	uxt  = uyt  = uzt  = 0;
@@ -130,8 +135,9 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 	    	printf("\n%s\n", STARS);
 	    	// exit(EXIT_FAILURE);
 	    }
+	    // printf("X = %f, y = %f, depth = %f, length = %f, width = %f, strkie = %f, dip = %f, ss=%f, ds=%f, opening=%f\n", model[0], model[1], model[2], model[3], model[4], model[5], model[6], model[7], model[8] , model[9]);
 	    
-	    dc3d_(&alpha, &x, &y, &z, &depth, &dip, &al1, &al2, &aw1, &aw2,&disl1, &disl2, &disl3, &ux,  &uy,  &uz, &uxx, &uyx, &uzx, &uxy, &uyy, &uzy, &uxz, &uyz, &uzz, &iret);
+	    dc3d_(&alpha, &x, &y, &z, &depth, &dip, &al1, &al2, &aw1, &aw2, &disl1, &disl2, &disl3, &ux, &uy, &uz, &uxx, &uyx, &uzx, &uxy, &uyy, &uzy, &uxz, &uyz, &uzz, &iret);
 	    // printf("alpha: %f, x:%f, y:%f, z:%f, depth:%f, dip:%f, al1:%f, al2:%f, aw1:%f, aw2:%f, dis1:%f, dis2:%f, dis3:%f\n", alpha, x, y, z, depth, dip, al1, al2, aw1, aw2, disl1, disl2, disl3);
 
 
@@ -149,7 +155,8 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 	     */
 	    if (iret == 1) {iret = 100;}
 	    if (iret == 2) {iret = iret - 2;}
-	    *(flags + i*nmodel + j) = flag1 + flag2 + iret;
+	    flags_out = flags + nmodel * i;
+	    *(flags_out + j) = flag1 + flag2 + iret;
 
             // rotate then add
             uxt +=  cs*ux + ss*uy;
@@ -172,48 +179,49 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 	}
 
 	// Calculate U, S, D
-	U += 3*i;
-	D += 9*i;
-	S += 9*i;
+	Uout = U + 3*i;
+	Dout = D + 9*i;
+	Sout = S + 9*i;
+	Eout = E + 9*i;
 	
-        U[0] = uxt;
-        U[1] = uyt;
-        U[2] = uzt;
+        Uout[0] = uxt;
+        Uout[1] = uyt;
+        Uout[2] = uzt;
         
-        D[0] = uxxt;  // d11
-        D[1] = uxyt;  // d12
-        D[2] = uxzt;  // d13
-        D[3] = uyxt;  // d21
-        D[4] = uyyt;  // d22
-        D[5] = uyzt;  // d23
-        D[6] = uzxt;  // d31
-        D[7] = uzyt;  // d32
-        D[8] = uzzt;  // d33
+	// 9 spatial derivatives of the displacements
+        Dout[0] = uxxt;  // d11
+        Dout[1] = uxyt;  // d12
+        Dout[2] = uxzt;  // d13
+        Dout[3] = uyxt;  // d21
+        Dout[4] = uyyt;  // d22
+        Dout[5] = uyzt;  // d23
+        Dout[6] = uzxt;  // d31
+        Dout[7] = uzyt;  // d32
+        Dout[8] = uzzt;  // d33
 			 //
 	// if you want to calculate Strains ...
 	// symmetry with 6 independent elements
-	// S_ += 9*i;
-	// S_[0] = D[0];                 // s_11
-	// S_[1] = 0.5 * (D[1] + D[3]);  // s_12
-	// S_[2] = 0.5 * (D[2] + D[6]);  // s_13
-	// S_[3] = 0.5 * (D[1] + D[3]);  // s_21
-	// S_[4] = D[i][4];  	         // s_22
-	// S_[5] = 0.5 * (D[5] + D[7]);  // s_23
-	// S_[6] = 0.5 * (D[2] + D[6]);  // s_31
-	// S_[7] = 0.5 * (D[5] + D[7]);  // s_32
-	// S_[8] = D[8] 		 // S-33
+	Eout[0] = Dout[0];                       // e11
+	Eout[1] = 0.5 * (Dout[1] + Dout[3]);     // e12
+	Eout[2] = 0.5 * (Dout[2] + Dout[6]);     // e13
+	Eout[3] = 0.5 * (Dout[1] + Dout[3]);     // e21
+	Eout[4] = Dout[4];  	                 // e22
+	Eout[5] = 0.5 * (Dout[5] + Dout[7]);     // e23
+	Eout[6] = 0.5 * (Dout[2] + Dout[6]);     // e31
+	Eout[7] = 0.5 * (Dout[5] + Dout[7]);     // e32
+	Eout[8] = Dout[8]; 		         // e33
 	
         // calculate stresses, symmetry with 6 independent elements
-        theta   = D[0] + D[4] + D[8];
-        S[0] = lambda*theta + 2*mu*D[0];  // s11
-        S[1] = mu*(D[1] + D[3]);          // s12
-        S[2] = mu*(D[2] + D[6]);          // s13
-	S[3] = mu*(D[1] + D[3]);          // s21
-        S[4] = lambda*theta + 2*mu*D[4];  // s22
-        S[5] = mu*(D[5] + D[7]);          // s23
-        S[6] = mu*(D[2] + D[6]);          // s31
-	S[7] = mu*(D[5] + D[7]); 	  // s32 
-	S[8] = lambda*theta + 2*mu*D[8];  // s33 
+        theta   = Dout[0] + Dout[4] + Dout[8];
+        Sout[0] = lambda*theta + 2*mu*Dout[0];     // s11
+        Sout[1] = mu*(Dout[1] + Dout[3]);          // s12
+        Sout[2] = mu*(Dout[2] + Dout[6]);          // s13
+	Sout[3] = mu*(Dout[1] + Dout[3]);          // s21
+        Sout[4] = lambda*theta + 2*mu*Dout[4];     // s22
+        Sout[5] = mu*(Dout[5] + Dout[7]);          // s23
+        Sout[6] = mu*(Dout[2] + Dout[6]);          // s31
+	Sout[7] = mu*(Dout[5] + Dout[7]); 	   // s32 
+	Sout[8] = lambda*theta + 2*mu*Dout[8];     // s33 
 
     }
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "okada_dc3d0.h"
+#include "okada.h"
 //#include "okada_dc3d0.c"
 
 

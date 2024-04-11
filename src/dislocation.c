@@ -33,14 +33,18 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
 
     // C contiguous, double and aligned, a new reference or a brand new array would be returned
     obs_    = (PyArrayObject *)PyArray_FROM_OTF((PyObject *)obs, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
-    if (obs_ == NULL) return NULL;
-    models_ = (PyArrayObject *)PyArray_FROM_OTF((PyObject *)models, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
-    if (models_ == NULL) { 
-	Py_DECREF(obs_);
+    if (obs_ == NULL) {
+        PyErr_SetString(PyExc_ValueError, "The observations array is NULL!\n");
 	return NULL;
     }
 
-    // 可能是double 到 npy_double 不一致导致的
+    models_ = (PyArrayObject *)PyArray_FROM_OTF((PyObject *)models, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (models_ == NULL) { 
+	Py_DECREF(obs_);
+        PyErr_SetString(PyExc_ValueError, "The models array is NULL!\n");
+	return NULL;
+    }
+
 
 //    // Convert data type to double and C contiguous if needed
 //    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
@@ -81,13 +85,16 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     // printf("nobs:  %ld\n", nobs); 
     
     // Accessing data with 1-D C array 
-    npy_double *c_models = (npy_double *)PyArray_DATA(models_);
-    npy_double *c_obs = (npy_double *)PyArray_DATA(obs_);
+    double *c_models = (double *)PyArray_DATA(models_);
+    double *c_obs = (double *)PyArray_DATA(obs_);
+    // double *c_models = (double *)PyArray_GETPTR1(models_, 0);
+    // double *c_obs =    (double *)PyArray_GETPTR1(obs_, 0);
 
     // Initialize U, D, S and flags
     PyArrayObject *U;
     PyArrayObject *D;
     PyArrayObject *S;
+    PyArrayObject *E;
     PyArrayObject *flags;
     npy_intp dims1 = (npy_intp) nobs * 3;
     npy_intp dims2 = (npy_intp) nobs * 9;
@@ -95,27 +102,31 @@ static PyObject *okada_rect(PyObject *self, PyObject *args) {
     U     = (PyArrayObject *)PyArray_ZEROS(1, &dims1, NPY_DOUBLE, 0);
     D     = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
     S     = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
+    E     = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
     flags = (PyArrayObject *)PyArray_ZEROS(1, &dims3, NPY_INT, 0);
-    if ((U == NULL) || (D == NULL) || (S == NULL) || (flags == NULL)) {
-	PyErr_SetString(PyExc_MemoryError, "Failed to allocate memories for U, D, S and falgs!");
+    if ((U == NULL) || (D == NULL) || (S == NULL) || (E == NULL) || (flags == NULL)) {
+	PyErr_SetString(PyExc_MemoryError, "Failed to allocate memories for U, D, S, E and falgs!");
 	Py_XDECREF(U);
 	Py_XDECREF(D);
 	Py_XDECREF(S);
+	Py_XDECREF(E);
 	Py_XDECREF(flags);
 	Py_DECREF(obs_);
 	Py_DECREF(models_);
 	return NULL;
     }
 
-    npy_double *U_data = (npy_double *)PyArray_DATA(U);
-    npy_double *D_data = (npy_double *)PyArray_DATA(D);
-    npy_double *S_data = (npy_double *)PyArray_DATA(S);
-    npy_int *flags_data =   (npy_int *)PyArray_DATA(flags);
+    double *U_data = (double *)PyArray_DATA(U);
+    double *D_data = (double *)PyArray_DATA(D);
+    double *S_data = (double *)PyArray_DATA(S);
+    double *E_data = (double *)PyArray_DATA(E);
+    int *flags_data =   (int *)PyArray_DATA(flags);
 
     // call disloc3d.c
-    disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U_data, D_data, S_data, flags_data);
+    disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U_data, D_data, S_data, E_data, flags_data);
 
-    PyObject *results = Py_BuildValue("(NNNN)", U, D, S, flags);
+    PyObject *results = NULL;
+    results = Py_BuildValue("(NNNNN)", U, D, S, E, flags);
 
     /*
     printf("\n");
@@ -184,6 +195,7 @@ PyDoc_STRVAR(
     "  - u           : displacements,\n"
     "  - d           : 9 spatial derivatives of the displacements,\n"
     "  - s           : 9 stress tensor components, 6 of them are independent,\n"
+    "  - e           : 9 strain tensor components, 6 of them are independent,\n"
     "  - flags       : flags [nobs x nmodels].\n"
     "                  flags = 0 : normal,\n"
     "                  flags = 1: the Z value of the obs > 0,\n"
