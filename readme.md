@@ -11,7 +11,7 @@ Though strain is a dimensionless quantity, specifying dislocation unit same with
 
 **Point source model codes have not been tested yet, use them at your own risk.**
 ## 1. Compile and Install
-### 1.1 Compile (by shared library/dynamic link library, dll)
+### Compile (by shared library/dynamic link library, dll)
 Using `setup.py` file, building shared library in current directory otherwise in ./build
 ```bash
 python setup.py build --build-lib ./
@@ -22,10 +22,8 @@ gcc/clang src/dislocation.c src/okada_dc3d.c src/okada_disloc3d.c -fPIC -O2 -I<N
 ```
 Then you can copy the shared library `.so` file to your site-packages folder of your current python environment, or to your working directory. Then you could import the module successfully.
 
-### 1.2 Installation (by installing)
-`python setup.py install` has been deprecated, please use `pip install **`
 
-## Reference:  
+## 2. Reference:  
 Okada, Y., 1992, Internal deformation due to shear and tensile faults in a half-space, Bull. Seism. Soc. Am., 82, 1018-1040.
 
 ## More Useful Resources:
@@ -34,7 +32,7 @@ okada_wrapper
 okada4py   
 dc3d from stanford
 
-> Zelong Guo, Potadam  
+> Zelong Guo, Potsdam  
 zelong.guo@outlook.com
 
 
