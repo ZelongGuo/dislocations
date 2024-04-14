@@ -11,8 +11,14 @@ source = ["src/dislocation.c", "src/okada_dc3d.c", "src/okada_disloc3d.c"]
 ext_module = Extension("dislocation", source, include_dirs=[np_inc])
 
 setup(
-    name="dislocation",    # 打包文件名称
-    version="1.0",
-    ext_modules=[ext_module],
-    # script_args=["build_ext", "--build-lib", "./"],
+    name = "dislocation",   
+    version = "1.0",
+    author = "Zelong Guo",
+    autohr_email = "zelong.guo@outlook.com",
+    description = "Calculating deformation, stress and strain due to elastic dislocations.",
+    ext_modules = [ext_module],
+    # script_args = ["build_ext", "--build-lib", "./"],
+    install_requires = [
+        "numpy>=1.26.0"
+        ],
 )
