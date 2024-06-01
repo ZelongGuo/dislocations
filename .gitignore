@@ -2,3 +2,4 @@ disloca*.so
 .DS_Store
 build
 .idea
+src/main
