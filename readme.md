@@ -1,6 +1,7 @@
 # Dislocation
 
 ### **Still Under Developing...**  
+### **To do: Reduce singularities of triangular elements with Nikkhoo and Walter GJI algorithms ...**  
 
 Calculating elastic deformation from dislocation sources
 
@@ -25,6 +26,7 @@ Then you can copy the shared library `.so` file to your site-packages folder of 
 
 ## 2. Reference:  
 Okada, Y., 1992, Internal deformation due to shear and tensile faults in a half-space, Bull. Seism. Soc. Am., 82, 1018-1040.
+Brendan J. Meade, 2007, Algorithms for the calculation of exact displacements, strains, and stresses for triangular dislocation elements in a uniform elastic half space, Computer & Geosciences, 33, 1064-1075.
 
 ## More Useful Resources:
 Codes:  
