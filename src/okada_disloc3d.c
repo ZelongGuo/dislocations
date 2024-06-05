@@ -180,15 +180,12 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 
 	// Calculate U, S, D
 	Uout = U + 3*i;
-	Dout = D + 9*i;
-	Sout = S + 9*i;
-	Eout = E + 9*i;
-	
         Uout[0] = uxt;
         Uout[1] = uyt;
         Uout[2] = uzt;
         
 	// 9 spatial derivatives of the displacements
+	Dout = D + 9*i;
         Dout[0] = uxxt;  // d11
         Dout[1] = uxyt;  // d12
         Dout[2] = uxzt;  // d13
@@ -201,6 +198,7 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 			 //
 	// if you want to calculate Strains ...
 	// symmetry with 6 independent elements
+	Eout = E + 9*i;
 	Eout[0] = Dout[0];                       // e11
 	Eout[1] = 0.5 * (Dout[1] + Dout[3]);     // e12
 	Eout[2] = 0.5 * (Dout[2] + Dout[6]);     // e13
@@ -212,6 +210,7 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
 	Eout[8] = Dout[8]; 		         // e33
 	
         // calculate stresses, symmetry with 6 independent elements
+	Sout = S + 9*i;
         theta   = Dout[0] + Dout[4] + Dout[8];
         Sout[0] = lambda*theta + 2*mu*Dout[0];     // s11
         Sout[1] = mu*(Dout[1] + Dout[3]);          // s12
