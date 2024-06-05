@@ -3,14 +3,14 @@
 #include <float.h>
 
 /*
- *  Calculating the surface displacements with triangular elements.
+ *  Calculating the stress and strains with triangular elements.
  *  Referring to the Matlab codes of Meade
  *
- * NOTE: The downward Z is positive!!! 
+ *  NOTE: The downward Z is positive!!! 
  *
- * Author: Zelong Guo
- * 05.25.2024, @ Potsdam, Germany
- * zelong.guo@outlook.com
+ *  Author: Zelong Guo
+ *  05.25.2024, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
  *
  */
 

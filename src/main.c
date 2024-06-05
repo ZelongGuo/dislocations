@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "meade_disp.c"
+#include "meade_dc3d.c"
 
 int main() {
 
@@ -31,6 +31,7 @@ int main() {
      * ----------------------------------------------------------------------------
      */
 
+    /*
     Vector3 p1 = {-50,  -80, -3};
     Vector3 p2 = {52, 80, 59};
     Vector3 p3 = {45,  -80, 34};
@@ -63,13 +64,43 @@ int main() {
     //     printf("No intersection or line is parallel to the plane.\n");
     // }
 
+    */
 
     /* ----------------------------------------------------------------------------
-     * Example usage of CalTriDisps
+     * Example usage of advs
      * ----------------------------------------------------------------------------
      */
 
-    double sx = 2.0, sy = 3.0, sz = -1.0;
+    /*
+
+    double y1 = 1.0; 
+    double y2 = 2.0; 
+    double y3 = 3.0; 
+    double a = 0.5; 
+    double b = 0.2; 
+    double nu = 0.3; 
+		     
+    double B1 = 1.0;
+    double B2 = 2.0; 
+    double B3 = -3.0; 
+		     
+    double e11, e22, e33;
+    double e12, e13, e23;
+
+
+    advs(y1, y2, y3, a, b, nu, B1, B2, B3, &e11, &e22, &e33, &e12, &e13, &e23);
+
+    printf("e11=%f, e22=%f, e33=%f\ne12=%f, e13=%f, e23=%f\n", e11, e22, e33, e12, e13, e23);
+
+    */
+
+
+    /* ----------------------------------------------------------------------------
+     * Example usage of CalTriDisps and CalTriStrains
+     * ----------------------------------------------------------------------------
+     */
+
+    double sx = 5.0, sy = 3.0, sz = -3.0;
     double x[3] = {5.0, 0.0, 2.0};
     double y[3] = {0.0, 5.0, 3.0};
     double z[3] = {0.0, 0.0, 12.0};
@@ -77,9 +108,16 @@ int main() {
     double ss = 1.0, ts =2.0, ds = 3.0;
 
     double U[3] = {0};
+    double E[9] = {0};
     CalTriDisps(sx, sy, sz, x, y, z, pr, ss, ts, ds, U);
+    CalTriStrains(sx, sy, sz, x, y, z, pr, ss, ts, ds, U);
 
-    printf("Displacement U: x = %f, y = %f, z = %f\n", U[0], U[1], U[2]);
+    printf("Displacement U:\n x = %f, y = %f, z = %f\n", U[0], U[1], U[2]);
+    printf("x:%f, y:%f, z:%f, pr:%f, ss:%f, ts:%f, ds:%f\n", x[0], y[1], z[2], pr, ss, ts, ds);
+    // printf("Strains E:\ne11 = %f, e12 = %f, e13 = %f\ne21 = %f, e22 = %f, e23 = %f\ne31 = %f, e32 = %f, e33 = %f\n", E[0], E[1], E[2], E[3], E[4], E[5], E[6], E[7], E[8]);
+    printf("x:%f, y:%f, z:%f, pr:%f, ss:%f, ts:%f, ds:%f\n", x[0], y[1], z[2], pr, ss, ts, ds);
+
+
 
     return 0;
 
