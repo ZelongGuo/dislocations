@@ -259,7 +259,7 @@ void adv(double y1, double y2, double y3, double a, double beta, double nu,
 }
 
 /* -------------------------------------------------------------------------- */
-void CalTriDisps(const double sx, const double sy, const double sz, const double *x, const double *y, const double *z, const double pr, const double ss, const double ts, const double ds, double *U) {
+void CalTriDisps(const double sx, const double sy, const double sz, double *x, double *y, double *z, const double pr, const double ss, const double ts, const double ds, double *U) {
     /*
      * Input Parameters:
      *
@@ -411,7 +411,7 @@ void CalTriDisps(const double sx, const double sy, const double sz, const double
 
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
-void CalTriStrains(const double sx, const double sy, const double sz, const double *x, const double *y, const double *z, const double pr, const double ss, const double ts, const double ds, double *E) {
+void CalTriStrains(const double sx, const double sy, const double sz, double *x, double *y, double *z, const double pr, const double ss, const double ts, const double ds, double *E) {
     /*
      * Input Parameters:
      *
@@ -435,7 +435,6 @@ void CalTriStrains(const double sx, const double sy, const double sz, const doub
     Vector3 v2 = {x[2] - x[0], y[2] - y[0], z[2] - z[0]};
     Vector3 normVec = crossProduct(v1, v2);
     normalize(&normVec);
-    // printf("normVec: (%f, %f, %f). \n", normVec.x, normVec.y, normVec.z); 
 
     /* Enforce clockwise circulation */
     if (normVec.z < 0) { 
@@ -466,7 +465,7 @@ void CalTriStrains(const double sx, const double sy, const double sz, const doub
         strikeVec.y * slipComp[0] + dipVec.y * slipComp[1] + normVec.y * slipComp[2],
         strikeVec.z * slipComp[0] + dipVec.z * slipComp[1] + normVec.z * slipComp[2]
     };
-
+  
     /* Solution vectors */
     for (int i = 0; i < 9; i++) {
 	*(E + i) = 0.0;
