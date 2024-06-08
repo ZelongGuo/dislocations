@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "meade_dc3d.c"
+#include "meade_dc3d.c"  
 
 int main() {
 
@@ -100,20 +100,25 @@ int main() {
      * ----------------------------------------------------------------------------
      */
 
-    double sx = 2.0, sy = 3.0, sz = 0.0;
-    double x[3] = {5.0, 0.0, 2.0};
-    double y[3] = {0.0, 5.0, 3.0};
-    double z[3] = {0.0, 0.0, 12.0};
+    double sx = -1.0/3, sy = -1.0/3, sz = -3.0;
+    double x[3] = {-1.0,  1.0, -1.0};
+    double y[3] = {-1.0, -1.0,  1.0};
+    double z[3] = {-5.0, -5.0, -4.0};
     double pr = 0.25;
-    double ss = 1.0, ts =2.0, ds = 3.0;
+    double ss = 1.0, ts = 2.0, ds = -1.0;
 
     double U[3] = {0};
     double E[9] = {0};
     CalTriDisps(sx, sy, sz, x, y, z, pr, ss, ts, ds, U);
     CalTriStrains(sx, sy, sz, x, y, z, pr, ss, ts, ds, E);
+    double S[9] = {0};
+    double lambda = 0.8;
+    double mu = 1.3;
+    CalTriStress(E, lambda, mu, S);
 
     printf("Displacement U:\n x = %f, y = %f, z = %f\n", U[0], U[1], U[2]);
     printf("Strains E:\ne11 = %f, e12 = %f, e13 = %f\ne21 = %f, e22 = %f, e23 = %f\ne31 = %f, e32 = %f, e33 = %f\n", E[0], E[1], E[2], E[3], E[4], E[5], E[6], E[7], E[8]);
+    printf("Strains S:\ns11 = %f, s12 = %f, s13 = %f\ns21 = %f, s22 = %f, s23 = %f\ns31 = %f, s32 = %f, s33 = %f\n", S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7], S[8]);
 
     return 0;
 

@@ -34,12 +34,12 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
      *         and more combination scenarios.
     */ 
    
-    double lambda; 
+    double lamda; 
     double alpha;
     double theta;
     
-    lambda = 2.0*mu*nu / (1.0 - 2.0*nu);
-    alpha = (lambda + mu)/(lambda + 2.0*mu);
+    lamda = 2.0*mu*nu / (1.0 - 2.0*nu);
+    alpha = (lamda + mu)/(lamda + 2.0*mu);
 
     int flag1;
     int flag2;
@@ -212,15 +212,15 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, dou
         // calculate stresses, symmetry with 6 independent elements
 	Sout = S + 9*i;
         theta   = Dout[0] + Dout[4] + Dout[8];
-        Sout[0] = lambda*theta + 2*mu*Dout[0];     // s11
+        Sout[0] = lamda*theta + 2*mu*Dout[0];     // s11
         Sout[1] = mu*(Dout[1] + Dout[3]);          // s12
         Sout[2] = mu*(Dout[2] + Dout[6]);          // s13
 	Sout[3] = mu*(Dout[1] + Dout[3]);          // s21
-        Sout[4] = lambda*theta + 2*mu*Dout[4];     // s22
+        Sout[4] = lamda*theta + 2*mu*Dout[4];     // s22
         Sout[5] = mu*(Dout[5] + Dout[7]);          // s23
         Sout[6] = mu*(Dout[2] + Dout[6]);          // s31
 	Sout[7] = mu*(Dout[5] + Dout[7]); 	   // s32 
-	Sout[8] = lambda*theta + 2*mu*Dout[8];     // s33 
+	Sout[8] = lamda*theta + 2*mu*Dout[8];     // s33 
 
     }
 }
