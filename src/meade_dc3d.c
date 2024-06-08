@@ -67,11 +67,6 @@ void planeFromPoints(Vector3 p1, Vector3 p2, Vector3 p3, double* A, double* B, d
     *B = normal.y;
     *C = normal.z;
     *D = -dotProduct(normal, p1);
-    
-    // printf("v1: (%f, %f, %f)\n", v1.x, v1.y, v1.z);
-    // printf("v2: (%f, %f, %f)\n", v2.x, v2.y, v2.z);
-    // printf("normal: (%f, %f, %f)\n", normal.x, normal.y, normal.z);
-    // printf("A: %f, B: %f, C: %f, D: %f\n", *A, *B, *C, *D);
 }
 
 /* Calculating the intersection point of Line and Plane using parameter t.
@@ -88,7 +83,6 @@ void linePlaneIntersect(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 linePoint, V
     double numerator = -D - (A * linePoint.x + B * linePoint.y + C * linePoint.z);
     double denominator = A * lineDir.x + B * lineDir.y + C * lineDir.z;
 
-    // printf("numerator: %e\ndenumerator: %e\n", numerator, denominator);
     if (denominator == 0) {
         if (numerator == 0) {
             /* if the point is on the plane, the intersection is itself */
@@ -259,6 +253,8 @@ void adv(double y1, double y2, double y3, double a, double beta, double nu,
 }
 
 /* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
 void CalTriDisps(const double sx, const double sy, const double sz, double *x, double *y, double *z, const double pr, const double ss, const double ts, const double ds, double *U) {
     /*
      * Input Parameters:
@@ -283,7 +279,6 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
     Vector3 v2 = {x[2] - x[0], y[2] - y[0], z[2] - z[0]};
     Vector3 normVec = crossProduct(v1, v2);
     normalize(&normVec);
-    // printf("normVec: (%f, %f, %f). \n", normVec.x, normVec.y, normVec.z); 
 
     /* Enforce clockwise circulation */
     if (normVec.z < 0) { 
@@ -305,18 +300,9 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
     if (normVec.x == -0.0) {normVec.x = 0.0;}
     if (normVec.y == -0.0) {normVec.y = 0.0;}
 
-    /*
-    printf("normVec.xyz:(%f, %f, %f) \n", normVec.x, normVec.y, normVec.z);
-    printf("x0, x1, x2: [%f %f %f]\n", x[0], x[1], x[2]); 
-    printf("y0, y1, y2: [%f %f %f]\n", y[0], y[1], y[2]); 
-    printf("z0, z1, z2: [%f %f %f]\n", z[0], z[1], z[2]); 
-    */
 
     Vector3 strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
-    // printf("normVec.xyz2:(%e, %e, %e) \n", normVec.x, normVec.y, normVec.z);
-    // printf("strikeVec: (%f, %f, %f). \n", strikeVec.x, strikeVec.y, strikeVec.z);
     Vector3 dipVec = crossProduct(normVec, strikeVec);
-    // printf("dipVec: (%f, %f, %f). \n", dipVec.x, dipVec.y, dipVec.z);
 
     double slipComp[3] = {ss, ds, ts};
     Vector3 slipVec = {
@@ -324,8 +310,6 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
         strikeVec.y * slipComp[0] + dipVec.y * slipComp[1] + normVec.y * slipComp[2],
         strikeVec.z * slipComp[0] + dipVec.z * slipComp[1] + normVec.z * slipComp[2]
     };
-
-     // printf("slipVec: %f, %f, %f.\n", slipVec.x, slipVec.y, slipVec.z); 
 
     /* Solution vectors */
     for (int i = 0; i < 3; i++) {
@@ -411,6 +395,7 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
 
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
+
 void CalTriStrains(const double sx, const double sy, const double sz, double *x, double *y, double *z, const double pr, const double ss, const double ts, const double ds, double *E) {
     /*
      * Input Parameters:
@@ -550,4 +535,34 @@ void CalTriStrains(const double sx, const double sy, const double sz, double *x,
     	    *(E + 8) += e33n;   // e33
 	}
     }
+}
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+void CalTriStress(double *E, double lambda, double mu, double *S) {
+
+    /* Calculate stresses from strains.
+     *
+     * Input:
+     *  - E: strains
+     *  - lambda
+     *  - mu
+     *
+     * Return:
+     * S: 9 component of stress tensors
+     *
+     */
+
+    double traceStrain = *E + *(E + 4) + *(E + 8);
+
+    *S 	     = 2.0 * mu * *E + lambda * traceStrain;        // S11
+    *(S + 1) = 2.0 * mu * *(E + 1); 			    // S12
+    *(S + 2) = 2.0 * mu * *(E + 2); 			    // S13
+    *(S + 3) = 2.0 * mu * *(E + 3); 			    // S21
+    *(S + 4) = 2.0 * mu * *(E + 4) + lambda * traceStrain;  // S22
+    *(S + 5) = 2.0 * mu * *(E + 5); 			    // S23
+    *(S + 6) = 2.0 * mu * *(E + 6); 			    // S31
+    *(S + 7) = 2.0 * mu * *(E + 7); 			    // S32
+    *(S + 8) = 2.0 * mu * *(E + 8) + lambda * traceStrain;  // S33
+
 }
