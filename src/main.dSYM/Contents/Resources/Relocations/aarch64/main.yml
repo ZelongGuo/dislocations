@@ -1,0 +1,25 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     main
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _advs, symObjAddr: 0x0, symBinAddr: 0x100001050, symSize: 0x6E780 }
+  - { offsetInCU: 0x56, offset: 0x56, size: 0x8, addend: 0x0, symName: _advs, symObjAddr: 0x0, symBinAddr: 0x100001050, symSize: 0x6E780 }
+  - { offsetInCU: 0x23DE, offset: 0x23DE, size: 0x8, addend: 0x0, symName: _powd_snf, symObjAddr: 0x6E780, symBinAddr: 0x10006F7D0, symSize: 0x414 }
+  - { offsetInCU: 0x2543, offset: 0x2543, size: 0x8, addend: 0x0, symName: _subtract, symObjAddr: 0x6EB94, symBinAddr: 0x10006FBE4, symSize: 0x60 }
+  - { offsetInCU: 0x2587, offset: 0x2587, size: 0x8, addend: 0x0, symName: _crossProduct, symObjAddr: 0x6EBF4, symBinAddr: 0x10006FC44, symSize: 0x84 }
+  - { offsetInCU: 0x25CB, offset: 0x25CB, size: 0x8, addend: 0x0, symName: _dotProduct, symObjAddr: 0x6EC78, symBinAddr: 0x10006FCC8, symSize: 0x48 }
+  - { offsetInCU: 0x2601, offset: 0x2601, size: 0x8, addend: 0x0, symName: _norm, symObjAddr: 0x6ECC0, symBinAddr: 0x10006FD10, symSize: 0x40 }
+  - { offsetInCU: 0x2629, offset: 0x2629, size: 0x8, addend: 0x0, symName: _normalize, symObjAddr: 0x6ED00, symBinAddr: 0x10006FD50, symSize: 0x70 }
+  - { offsetInCU: 0x265B, offset: 0x265B, size: 0x8, addend: 0x0, symName: _planeFromPoints, symObjAddr: 0x6ED70, symBinAddr: 0x10006FDC0, symSize: 0x11C }
+  - { offsetInCU: 0x2702, offset: 0x2702, size: 0x8, addend: 0x0, symName: _linePlaneIntersect, symObjAddr: 0x6EE8C, symBinAddr: 0x10006FEDC, symSize: 0x1D0 }
+  - { offsetInCU: 0x27D4, offset: 0x27D4, size: 0x8, addend: 0x0, symName: _isPointInTriangle2D, symObjAddr: 0x6F05C, symBinAddr: 0x1000700AC, symSize: 0x1A0 }
+  - { offsetInCU: 0x286E, offset: 0x286E, size: 0x8, addend: 0x0, symName: _swap, symObjAddr: 0x6F1FC, symBinAddr: 0x10007024C, symSize: 0x3C }
+  - { offsetInCU: 0x28AE, offset: 0x28AE, size: 0x8, addend: 0x0, symName: _RotateXyVec, symObjAddr: 0x6F238, symBinAddr: 0x100070288, symSize: 0xB8 }
+  - { offsetInCU: 0x290A, offset: 0x290A, size: 0x8, addend: 0x0, symName: _cot, symObjAddr: 0x6F2F0, symBinAddr: 0x100070340, symSize: 0x30 }
+  - { offsetInCU: 0x2932, offset: 0x2932, size: 0x8, addend: 0x0, symName: _atan2_custom, symObjAddr: 0x6F320, symBinAddr: 0x100070370, symSize: 0x2C }
+  - { offsetInCU: 0x2968, offset: 0x2968, size: 0x8, addend: 0x0, symName: _adv, symObjAddr: 0x6F34C, symBinAddr: 0x10007039C, symSize: 0x1FA8 }
+  - { offsetInCU: 0x2C93, offset: 0x2C93, size: 0x8, addend: 0x0, symName: _CalTriDisps, symObjAddr: 0x712F4, symBinAddr: 0x100072344, symSize: 0xAC8 }
+  - { offsetInCU: 0x304F, offset: 0x304F, size: 0x8, addend: 0x0, symName: _CalTriStrains, symObjAddr: 0x71DBC, symBinAddr: 0x100072E0C, symSize: 0xB1C }
+  - { offsetInCU: 0x34BD, offset: 0x34BD, size: 0x8, addend: 0x0, symName: _CalTriStress, symObjAddr: 0x728D8, symBinAddr: 0x100073928, symSize: 0x164 }
+  - { offsetInCU: 0x351F, offset: 0x351F, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x72A3C, symBinAddr: 0x100073A8C, symSize: 0x2A8 }
+...

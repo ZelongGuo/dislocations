@@ -1,6 +1,3 @@
-// #include <stdio.h>
-// #include <math.h>
-
 /*
  * File: advs.c
  *
