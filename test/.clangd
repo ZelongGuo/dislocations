@@ -1,0 +1,6 @@
+# This is for the .clangd file which is for LSP disgnostics
+CompileFlags:
+    Add:
+        # Add include directory to search path, relative path is supported
+        # e.g., [-I/path/to/headers, -Ianother/include/path]
+        [ -I../include ]
