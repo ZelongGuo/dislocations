@@ -1,5 +1,6 @@
 disloca*.so
-.DS_Store
-build
+build/*
+bin/
 .idea
 src/main
+**/.DS_Store
