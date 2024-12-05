@@ -1,0 +1,24 @@
+# This is for CMakeLists.txt
+
+# Minimum Cmake Version Required:
+cmake_minimum_required(VERSION 3.14)
+
+# PROJECT Name and VERSION NO.:
+project(dislocation VERSION 0.0.1)
+
+# Complier Options, if you want debugging:
+add_compile_options(-g -O2 -Wunused)
+
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+
+# Header files:
+include_directories(/include)
+
+# Source files:
+file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/core/*.c)
+
+# Executable files:
+add_executable(test test/test.c ${SOURCES})
+
+
+# for shared lib, use target_include_directories maybe better ...
