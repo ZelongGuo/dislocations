@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "meade.h"
 
 #define DEG2RAD (M_PI / 180)
 #define cosd(a) (cos((a)*DEG2RAD))
 #define sind(a) (sin((a)*DEG2RAD))
 
-void meade_disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu, double *U, double *D, double *S, double *E, int *flags)
+void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu, double *U, double *D, double *S, double *E, int *flags)
 {
     /*	
      * Input Parameters: 
@@ -33,7 +32,15 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
     */ 
    
     double lamda; 
+    double alpha;
+    double theta;
+    
     lamda = 2.0*mu*nu / (1.0 - 2.0*nu);
+    alpha = (lamda + mu)/(lamda + 2.0*mu);
+
+    int flag1;
+    int flag2;
+    int iret;
 
     double *model = NULL;
     double *obs = NULL;

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
-#include "meade_advs.c"
 
 /*
  *  Calculating the displacements with triangular elements.
