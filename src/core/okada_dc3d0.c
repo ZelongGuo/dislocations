@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "okada.h"
 
 /* Common Block Declarations */
 
@@ -71,7 +70,7 @@ union {
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     static doublereal pp1, pp2, pp3, pp4, dua[12], dub[12], duc[12], ddip;
-    extern /* Subroutine */ int dccon0_(doublereal *, doublereal *), dccon1_(
+    extern /* Subroutine */ int dccon00_(doublereal *, doublereal *), dccon1_(
 	    doublereal *, doublereal *, doublereal *);
     static doublereal aalpha;
 
@@ -120,9 +119,9 @@ union {
 	*iret = 2;
 /*<         GO TO 99 >*/
 	// goto L99;
-	printf("\n%s\n", STARS);
+	printf("\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-\n");
 	fprintf(stderr, "Error, positive z is specified!");
-	printf("\n%s\n", STARS);
+	printf("\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-\n");
 	exit(EXIT_FAILURE);
 /*<       ENDIF >*/
     }
@@ -145,7 +144,7 @@ union {
 /*<       DDIP=DIP >*/
     ddip = *dip;
 /*<       CALL DCCON0(AALPHA,DDIP) >*/
-    dccon0_(&aalpha, &ddip);
+    dccon00_(&aalpha, &ddip);
 /* ====================================== */
 /* =====  REAL-SOURCE CONTRIBUTION  ===== */
 /* ====================================== */
@@ -1042,7 +1041,7 @@ L99:
 } /* uc0_ */
 
 /*<       SUBROUTINE  DCCON0(ALPHA,DIP) >*/
-/* Subroutine */ int dccon0_(doublereal *alpha, doublereal *dip)
+/* Subroutine */ int dccon00_(doublereal *alpha, doublereal *dip)
 {
     /* Initialized data */
 
@@ -1117,7 +1116,7 @@ L99:
 /*<       RETURN >*/
     return 0;
 /*<       END >*/
-} /* dccon0_ */
+} /* dccon00_ */
 
 /*<       SUBROUTINE  DCCON1(X,Y,D) >*/
 /* Subroutine */ int dccon1_(doublereal *x, doublereal *y, doublereal *d__)
