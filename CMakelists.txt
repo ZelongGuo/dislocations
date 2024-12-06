@@ -7,18 +7,20 @@ cmake_minimum_required(VERSION 3.14)
 project(dislocation VERSION 0.0.1)
 
 # Complier Options, if you want debugging:
-add_compile_options(-g -O2 -Wunused)
+#add_compile_options(-g -O2)
+# add_compile_options(-g -O2 -fPIC)
 
 message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 
 # Header files:
-include_directories(/include)
+include_directories(./include)
 
 # Source files:
-file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/core/*.c)
+# file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/core/*.c)
+file(GLOB SOURCES ./src/core/okada*.c)
 
 # Executable files:
-add_executable(test test/test.c ${SOURCES})
+add_executable(test ./test/test.c ${SOURCES})
 
 
 # for shared lib, use target_include_directories maybe better ...
