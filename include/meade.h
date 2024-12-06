@@ -1,11 +1,11 @@
-#include <random>
+// #include <random>
 #ifdef __cplusplus
 extern "C"
 #endif
 
-#define STARS                                                                  \
-  "+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" \
-  "-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+// #define STARS                                                                  \
+//   "+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" \
+//   "-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
 
 void advs(double b_y1, double y2, double y3, double a, double b, double nu,
          double B1, double B2, double B3, double *e11, double *e22, double *e33,
