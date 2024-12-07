@@ -190,7 +190,7 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu,
             uyt += -ss * ux + cs * uy;
             uzt += uz;
 
-            // 9 spatial derivatives of the displacements
+            // 9 spatial 1-order derivatives of the displacements
             uxxt += cs2 * uxx + csss * (uxy + uyx) + ss2 * uyy;
             uxyt += cs2 * uxy - ss2 * uyx + csss * (-uxx + uyy);
             uxzt += cs * uxz + ss * uyz;
