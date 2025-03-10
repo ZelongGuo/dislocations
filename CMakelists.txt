@@ -1,26 +1,35 @@
 # This is for CMakeLists.txt
+# Zelong Guo, @ Potsdam, DE
 
-# Minimum Cmake Version Required:
+# ------------------ CMake Version ------------------
 cmake_minimum_required(VERSION 3.14)
 
-# PROJECT Name and VERSION NO.:
+# ------------------ Project Name ------------------
 project(dislocation VERSION 0.0.1)
 
-# Complier Options, if you want debugging:
-#add_compile_options(-g -O2)
-# add_compile_options(-g -O2 -fPIC)
-
+# ------------------ CMake Configuration ------------------
 message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 
-# Header files:
-include_directories(./include)
+# ------------------ Source Files ------------------
+set(OKADA_SOURCES
+    ${CMAKE_SOURCE_DIR}/src/core/okada_dc3d.c
+    ${CMAKE_SOURCE_DIR}/src/core/okada_disloc3d.c
+    ${CMAKE_SOURCE_DIR}/src/core/okada_dc3d0.c
+    ${CMAKE_SOURCE_DIR}/src/core/okada_disloc3d0.c
+)
 
-# Source files:
-# file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/core/*.c)
-file(GLOB SOURCES ./src/core/okada*.c)
-
+# ------------------ Objectives  ------------------
 # Executable files:
-add_executable(test ./test/test.c ${SOURCES})
+add_executable(test)
+# Source files:
+target_sources(test PUBLIC ${CMAKE_SOURCE_DIR}/test/test.c ${OKADA_SOURCES})
+# Header files (directories):
+target_include_directories(test PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
+# -------------------- Build Options --------------------
+# Complier Options, if you want debugging:
+target_compile_options(test PUBLIC -g -O2 -fPIC)
+
+# Linking Options go here:
 
 # for shared lib, use target_include_directories maybe better ...
