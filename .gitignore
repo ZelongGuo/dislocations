@@ -4,3 +4,5 @@ bin/
 .idea
 src/main
 **/.DS_Store
+docs/*
+!docs/*.pdf
