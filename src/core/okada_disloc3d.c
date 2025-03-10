@@ -7,7 +7,7 @@
 #define cosd(a) (cos((a) * DEG2RAD))
 #define sind(a) (sin((a) * DEG2RAD))
 
-void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu,
+void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double mu,
               double nu, double *U, double *D, double *S, double *E,
               int *flags) {
     /*
@@ -16,17 +16,22 @@ void disloc3d(double *models, int nmodel, double *obss, int nobs, double mu,
      * models: [nmodel * 10], a pointer of 1-D array
      *         easting, northing, depth (>=0, defined as the depth of fault
      * upper center point, easting and northing likewise) length, width, strike,
-     * dip, str-slip, dip-selip, opening obss  : [nobs * 3], a pointer of 1-D
-     * array, in which the Z <= 0 mu    : shear modulus nu    : Poisson's ratio
+     * dip, str-slip, dip-selip, opening 
+     * obss  : [nobs * 3], a pointer of 1-D array, in which the Z <= 0 
+     * mu    : shear modulus
+     * nu    : Poisson's ratio
      *
      * Output:
      * U     : [nobs x 3], DISPLACEMENT, the unit is same to those defined by
      * dislocation slip in models
      *
      * D     : [nobs x 9], 9 spatial derivatives of the displacements having 3
-     * elements S     : [nobs x 9], STRESS, the unit depends on that of shear
-     * modulus, 6 of them are independent E     : [nobs x 9], STRAIN,
-     * dimensionless, 6 of them are independent flags : [nobs x nmodle], a
+     * elements 
+     * S     : [nobs x 9], STRESS, the unit depends on that of shear
+     * modulus, 6 of them are independent 
+     * E     : [nobs x 9], STRAIN,
+     * dimensionless, 6 of them are independent 
+     * flags : [nobs x nmodle], a
      * pointer of an 1-D array 0 normal; 1 the Z value of the obs > 0 10 the
      * depth of the fault upper center point reached to surface (depth < 0) 100
      * singular point (observation point lies on the fault edges); and more

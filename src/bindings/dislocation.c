@@ -137,8 +137,8 @@ extern "C"
   double *E_data = (double *)PyArray_DATA(E);
   int *flags_data = (int *)PyArray_DATA(flags);
 
-  // call disloc3d.c
-  disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U_data, D_data, S_data,
+  // call okada_disloc3d.c
+  okada_disloc3d(c_models, nmodels, c_obs, nobs, mu, nu, U_data, D_data, S_data,
            E_data, flags_data);
 
   PyObject *results = NULL;
