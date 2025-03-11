@@ -216,6 +216,9 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
         Uout[2] = uzt;
 
         // 9 spatial derivatives of the displacements
+        // d11 d12 d13 
+        // d21 d22 d23
+        // d31 d32 d33
         Dout = D + 9 * i;
         Dout[0] = uxxt; // d11
         Dout[1] = uxyt; // d12
@@ -226,31 +229,31 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
         Dout[6] = uzxt; // d31
         Dout[7] = uzyt; // d32
         Dout[8] = uzzt; // d33
-                        //
+
         // if you want to calculate Strains ...
         // symmetry with 6 independent elements
-        Eout = E + 9 * i;
+        // E11 E12 E13
+        //     E22 E23
+        //         E33
+        Eout = E + 6 * i;
         Eout[0] = Dout[0];                   // e11
         Eout[1] = 0.5 * (Dout[1] + Dout[3]); // e12
         Eout[2] = 0.5 * (Dout[2] + Dout[6]); // e13
-        Eout[3] = 0.5 * (Dout[1] + Dout[3]); // e21
-        Eout[4] = Dout[4];                   // e22
-        Eout[5] = 0.5 * (Dout[5] + Dout[7]); // e23
-        Eout[6] = 0.5 * (Dout[2] + Dout[6]); // e31
-        Eout[7] = 0.5 * (Dout[5] + Dout[7]); // e32
-        Eout[8] = Dout[8];                   // e33
+        Eout[3] = Dout[4];                   // e22
+        Eout[4] = 0.5 * (Dout[5] + Dout[7]); // e23
+        Eout[5] = Dout[8];                   // e33
 
         // calculate stresses, symmetry with 6 independent elements
-        Sout = S + 9 * i;
+        // S11 S12 S13
+        //     S22 S23
+        //         S33
+        Sout = S + 6 * i;
         theta = Dout[0] + Dout[4] + Dout[8];
         Sout[0] = lamda * theta + 2 * mu * Dout[0]; // s11
         Sout[1] = mu * (Dout[1] + Dout[3]);         // s12
         Sout[2] = mu * (Dout[2] + Dout[6]);         // s13
-        Sout[3] = mu * (Dout[1] + Dout[3]);         // s21
-        Sout[4] = lamda * theta + 2 * mu * Dout[4]; // s22
-        Sout[5] = mu * (Dout[5] + Dout[7]);         // s23
-        Sout[6] = mu * (Dout[2] + Dout[6]);         // s31
-        Sout[7] = mu * (Dout[5] + Dout[7]);         // s32
-        Sout[8] = lamda * theta + 2 * mu * Dout[8]; // s33
+        Sout[3] = lamda * theta + 2 * mu * Dout[4]; // s22
+        Sout[4] = mu * (Dout[5] + Dout[7]);         // s23
+        Sout[5] = lamda * theta + 2 * mu * Dout[8]; // s33
     }
 }

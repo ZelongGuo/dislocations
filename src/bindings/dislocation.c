@@ -110,7 +110,7 @@ extern "C"
   PyArrayObject *E;
   PyArrayObject *flags;
   npy_intp dims1 = (npy_intp)nobs * 3;
-  npy_intp dims2 = (npy_intp)nobs * 9;
+  npy_intp dims2 = (npy_intp)nobs * 6;
   npy_intp dims3 = (npy_intp)nobs * nmodels;
   U = (PyArrayObject *)PyArray_ZEROS(1, &dims1, NPY_DOUBLE, 0);
   D = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
@@ -217,8 +217,8 @@ PyDoc_STRVAR(
     "- Output:\n"
     "  - u           : displacements,\n"
     "  - d           : 9 spatial derivatives of the displacements,\n"
-    "  - s           : 9 stress tensor components, 6 of them are independent,\n"
-    "  - e           : 9 strain tensor components, 6 of them are independent,\n"
+    "  - s           : 6 independent stress tensor components, \n"
+    "  - e           : 6 independent strain tensor components, \n"
     "  - flags       : flags [nobs x nmodels].\n"
     "                  flags = 0 : normal,\n"
     "                  flags = 1: the Z value of the obs > 0,\n"
