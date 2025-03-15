@@ -89,7 +89,7 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
             fprintf(
                 stderr,
                 "Error, Observation station (ID: %d) has positive depth %f, "
-                "output set to 0, also see flags!",
+                "output set to 0, also see flags!\n",
                 i, *(obs + 2));
             printf("\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
                    "-+-+-+"
