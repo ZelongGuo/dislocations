@@ -8,13 +8,17 @@
  *  Calculating the displacements with triangular elements.
  *  Referring to the Matlab codes of Meade
  *
- *  NOTE: The downward Z is positive!!!
- *
  *  Author: Zelong Guo
  *  05.25.2024, @ Potsdam, Germany
  *  zelong.guo@outlook.com
  *
  */
+
+/* ------------------------------------------------------------ */
+/* A struct for vector and also for point in 3D */
+typedef struct {
+    double x, y, z;
+} Vector3;
 
 /* Calculating the difference of vectors */
 Vector3 subtract(const Vector3 a, const Vector3 b) {

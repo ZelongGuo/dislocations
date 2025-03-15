@@ -1,7 +1,7 @@
-#include "meade.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "meade.h"
 
 #define DEG2RAD (M_PI / 180)
 #define cosd(a) (cos((a) * DEG2RAD))
@@ -15,7 +15,7 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
      * models:
      *        [nmodel * 12], a pointer of 1-D array, including the 3 coordinates
      * components of the 3 vertexes of the triangle, as well as the 3
-     * dislocation components x1, y1, z1, x2, y2, z2, x3, y3, z3, str-slop,
+     * dislocation components x1, y1, z1, x2, y2, z2, x3, y3, z3, str-slip,
      * dip-slip, opening
      *
      *        Note the vertexes are in the UTM coordinate system (right-hand
@@ -50,8 +50,6 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
     double lamda;
     lamda = 2.0 * mu * nu / (1.0 - 2.0 * nu);
 
-    int flag1 = 0;
-
     double *model = NULL;
     double *obs = NULL;
     double *Uout = NULL, *Sout = NULL, *Eout = NULL;
@@ -73,7 +71,6 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
 
         if (*(obs + 2) > 0.0) {
             // positive z value of the station in UTM is given, let flag1 = 1
-            flag1 = 1;
             printf("\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
                    "-+-+-+-+-+-+-+-+-+-+-+-+-+-\n");
             fprintf(stderr,
@@ -124,13 +121,7 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
             double Et[6] = {0};
 
             // Call for the function to calculate the dislocation components
-            printf("sx: sy: sz: %f %f %f\n", sx, sy, sz);
-            printf("ss: ts: ds: %f %f %f\n", ss, ts, ds);
-            printf("x1: y1: z1: %f %f %f\n", x1, y1, z1);
-            printf("x2: y2: z2: %f %f %f\n", x2, y2, z2);
-            printf("x3: y3: z3: %f %f %f\n\n", x3, y3, z3);
             CalTriDisps(sx, sy, sz, x, y, z, nu, ss, ts, ds, Ut);
-            printf("Ut: %f %f %f\n", Ut[0], Ut[1], Ut[2]);
             CalTriStrains(sx, sy, sz, x, y, z, nu, ss, ts, ds, Et);
 
             // Add under the x1x2x3 coordinate system
