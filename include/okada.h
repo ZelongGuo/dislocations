@@ -1,6 +1,11 @@
 #ifndef OKADA_H_
 #define OKADA_H_
 
+// Define PI if not already defined
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 int dc3d0_(double *alpha, double *x, double *y, double *z__, double *depth,
            double *dip, double *pot1, double *pot2, double *pot3, double *pot4,
            double *ux, double *uy, double *uz, double *uxx, double *uyx,

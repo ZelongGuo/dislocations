@@ -2,6 +2,11 @@
 #ifndef MEADE_H_
 #define MEADE_H_
 
+// Define PI if not already defined
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 // IEEE 754 double-precision floating point storage for doubel comparison
 #define EPSILON 1e-12  // Error Threshold
 
