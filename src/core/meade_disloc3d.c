@@ -1,14 +1,9 @@
-#include <math.h>
+#include "meade.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "meade.h"
 
-#define DEG2RAD (M_PI / 180)
-#define cosd(a) (cos((a) * DEG2RAD))
-#define sind(a) (sin((a) * DEG2RAD))
-
-void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
-                    double mu, double nu, double *U, double *S, double *E) {
+void meade_disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu,
+                    double *U, double *S, double *E) {
     /*
      * Input Parameters:
      *
@@ -38,11 +33,6 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
      *
      * E :
      *        [nobs x 6], 6 independent STRAIN tensor components, dimensionless
-     * flags :
-     *        [nobs * nmodle], a pointer of an 1-D array 0 normal; 1 the Z value
-     * of the obs > 0 10 the depth of the fault upper center point reached to
-     * surface (depth < 0) 100 singular point (observation point lies on the
-     * fault edges); and more combination scenarios.
      */
 
     // --------------------------------------------------------------------------
@@ -54,13 +44,13 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
     double *obs = NULL;
     double *Uout = NULL, *Sout = NULL, *Eout = NULL;
 
-    double x1, y1, z1;
-    double x2, y2, z2;
-    double x3, y3, z3;
+    double x[3];
+    double y[3];
+    double z[3];
     double ss, ds, ts;
-
     double sx, sy, sz;
-
+    double Ut[3];
+    double Et[6];
     double uxt, uyt, uzt;
     double Exxt, Exyt, Exzt, Eyyt, Eyzt, Ezzt;
 
@@ -92,17 +82,17 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
 
             // From UTM to Angular x1x2x3 coordinate system
             // First vertex
-            x1 = model[0];
-            y1 = -model[1];
-            z1 = -model[2];
+            x[0] = model[0];
+            y[0] = -model[1];
+            z[0] = -model[2];
             // Second vertex
-            x2 = model[3];
-            y2 = -model[4];
-            z2 = -model[5];
+            x[1] = model[3];
+            y[1] = -model[4];
+            z[1] = -model[5];
             // Third vertex
-            x3 = model[6];
-            y3 = -model[7];
-            z3 = -model[8];
+            x[2] = model[6];
+            y[2] = -model[7];
+            z[2] = -model[8];
 
             // Same to the dislocation components
             ss = model[9];
@@ -113,12 +103,6 @@ void meade_disloc3d(double *models, int nmodel, double *obss, int nobs,
             sx = *obs;
             sy = -*(obs + 1);
             sz = -*(obs + 2);
-
-            double x[3] = {x1, x2, x3};
-            double y[3] = {y1, y2, y3};
-            double z[3] = {z1, z2, z3};
-            double Ut[3] = {0};
-            double Et[6] = {0};
 
             // Call for the function to calculate the dislocation components
             CalTriDisps(sx, sy, sz, x, y, z, nu, ss, ts, ds, Ut);
