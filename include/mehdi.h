@@ -8,6 +8,7 @@
 
 // IEEE 754 double-precision floating point storage for doubel comparison
 #define EPSILON 1e-12  // Error Threshold
+// #define EPSILON 2.220446049250313e-16  // Error Threshold
 
 /* ------------------    From TDUtls.c for all    ------------------ */
 void CoordTrans(double x1, double x2, double x3, double A[9],
@@ -82,4 +83,10 @@ void TDstress_HarFunc(double X, double Y, double Z, double P1[3], double P2[3], 
 void TDstressHS(double X, double Y, double Z, double P1[3], double P2[3], double P3[3],
                 double Ss, double Ds, double Ts, double mu, double lambda,
                 double Stress[6], double Strain[6]);
+
+/* --------------------------------------------------------------------- */
+/* mehdi_disloc3d.c */
+void mehdi_disloc3d(double *models, int nmodel, double *obss, int nobs, double mu, double nu,
+                    double *U, double *S, double *E);
+
 #endif
