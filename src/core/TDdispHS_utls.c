@@ -51,7 +51,7 @@ void TDdispFS4HS(double X, double Y, double Z, double P1[3], double P2[3], doubl
         norm_Vstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] + Vstrike[2] * Vstrike[2]);
     // For horizontal elements in case of half-space calculation!!!
     // Correct the strike vector of image dislocation only
-        if (P1[3] > 0) {
+        if (P1[2] > 0) {
             Vstrike[0] = -Vstrike[0];
             Vstrike[1] = -Vstrike[1];
             Vstrike[2] = -Vstrike[2];
