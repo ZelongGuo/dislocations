@@ -8,8 +8,14 @@ Mind the unit: recommend the International System of Units.
 
 Though strain is a dimensionless quantity, specifying dislocation unit same with fault parameters would help avoid further transformation.
 
+## Requirments:  
+Numpy
 
 **Point source model codes have not been tested yet, use them at your own risk.**
+
+Mehdi's codes is recommended because of no singularities and more numerically stable, even though I
+also included Meade's codes in the package.
+
 ## 1. Compile and Install
 ### Compile (by shared library/dynamic link library, dll)
 Using `setup.py` file, building shared library in current directory otherwise in ./build
