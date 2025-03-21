@@ -24,6 +24,6 @@ int dc3d_(double *alpha, double *x, double *y, double *z__, double *depth,
 // flags[nobs][nmodel]);
 
 void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double mu,
-              double nu, double *U, double *D, double *S, double *E,
+              double nu, double *U, double *S, double *E,
               int *flags);
 #endif

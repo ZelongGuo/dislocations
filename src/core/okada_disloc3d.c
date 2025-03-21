@@ -8,7 +8,7 @@
 #define sind(a) (sin((a) * DEG2RAD))
 
 void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double mu,
-              double nu, double *U, double *D, double *S, double *E,
+              double nu, double *U, double *S, double *E,
               int *flags) {
     /*
      * Input Parameters:
@@ -26,10 +26,10 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
      * dislocation slip in models
      *
      * D     : [nobs x 9], 9 spatial derivatives of the displacements having 3
-     * elements 
-     * S     : [nobs x 9], STRESS, the unit depends on that of shear
+     * elements, but we don't need this, so it is not an output now ...
+     * S     : [nobs x 6], STRESS, the unit depends on that of shear
      * modulus, 6 of them are independent 
-     * E     : [nobs x 9], STRAIN,
+     * E     : [nobs x 6], STRAIN,
      * dimensionless, 6 of them are independent 
      * flags : [nobs x nmodle], a
      * pointer of an 1-D array 0 normal; 1 the Z value of the obs > 0 10 the
@@ -51,7 +51,8 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
 
     double *model = NULL;
     double *obs = NULL;
-    double *Uout = NULL, *Dout = NULL, *Sout = NULL, *Eout = NULL;
+    double *Uout = NULL,  *Sout = NULL, *Eout = NULL; // *Dout = NULL,
+    double Dout[9];
     int *flags_out = NULL;
     double strike, dip;
     double cs, ss;
@@ -157,17 +158,10 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
                        "-+-+-+-+-+-+-+-+-\n");
                 // exit(EXIT_FAILURE);
             }
-            // printf("X = %f, y = %f, depth = %f, length = %f, width = %f,
-            // strkie = %f, dip = %f, ss=%f, ds=%f, opening=%f\n", model[0],
-            // model[1], model[2], model[3], model[4], model[5], model[6],
-            // model[7], model[8] , model[9]);
 
             dc3d_(&alpha, &x, &y, &z, &depth, &dip, &al1, &al2, &aw1, &aw2,
                   &disl1, &disl2, &disl3, &ux, &uy, &uz, &uxx, &uyx, &uzx, &uxy,
                   &uyy, &uzy, &uxz, &uyz, &uzz, &iret);
-            // printf("alpha: %f, x:%f, y:%f, z:%f, depth:%f, dip:%f, al1:%f,
-            // al2:%f, aw1:%f, aw2:%f, dis1:%f, dis2:%f, dis3:%f\n", alpha, x,
-            // y, z, depth, dip, al1, al2, aw1, aw2, disl1, disl2, disl3);
 
             /* flags = 0: normal
              * flags = 1: the Z value of the obs > 0
@@ -215,11 +209,12 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
         Uout[1] = uyt;
         Uout[2] = uzt;
 
+        // I don't think we need the 9 spatial derivatives of the displacements for output now ...
         // 9 spatial derivatives of the displacements
-        // d11 d12 d13 
+        // d11 d12 d13
         // d21 d22 d23
         // d31 d32 d33
-        Dout = D + 9 * i;
+        // Dout = D + 9 * i;
         Dout[0] = uxxt; // d11
         Dout[1] = uxyt; // d12
         Dout[2] = uxzt; // d13
