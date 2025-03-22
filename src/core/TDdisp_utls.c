@@ -3,6 +3,18 @@
 #include <math.h>
 #include "mehdi.h"
 
+/*---------------------------------------------------------
+ *  Functions used for calculating disp in both full and 
+ *  half space.
+ *
+ *  Referring to the Matlab codes of Meade
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ *---------------------------------------------------------*/
+
 /*-----------------------------------------------------------------------------------------------*/
 
 void AngDisDisp(double x, double y, double z, double alpha,

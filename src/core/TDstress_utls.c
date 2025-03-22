@@ -3,6 +3,18 @@
 #include <math.h>
 #include "mehdi.h"
 
+/*---------------------------------------------------------
+ *  Functions used for calculating stress in both full and
+ *  half space.
+ *
+ *  Referring to the Matlab codes of Mehdi
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ * ---------------------------------------------------------*/
+
 /*-----------------------------------------------------------------------------------------------*/
 void AngDisStrain(double x, double y, double z, double alpha, double bx, double by, double bz, double nu,
                   double *Exx, double *Eyy, double *Ezz, double *Exy, double *Exz, double *Eyz) {
