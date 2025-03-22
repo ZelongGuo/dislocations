@@ -1,6 +1,10 @@
 #include <math.h>
 /*
+* Thi is a C translation of the MATLAB code for the function advs
  * File: advs.c
+ *
+* Zelong Guo,
+* @ Potsdam, DE
  *
  */
 
