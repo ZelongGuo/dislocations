@@ -2,6 +2,49 @@
 # Zelong Guo, @ Potsdam, DE
 
 # ------------------------ Dislocation ------------------------
+# -------- Python related stuff  --------
+# Allow user to specify the Python environment path:
+# cmake .. -DPYTHON_ENV_PATH=/path/to/your/env
+if(NOT DEFINED PYTHON_ENV_PATH)
+    set(PYTHON_ENV_PATH "/Users/zelong/opt/miniconda3/envs/temp") # My default path
+endif()
+message(STATUS "Using Python environment: ${PYTHON_ENV_PATH}")
+
+# Auto-detect Python include directory
+execute_process(
+    COMMAND "${PYTHON_ENV_PATH}/bin/python" -c "import sysconfig; print(sysconfig.get_path('include'))"
+    OUTPUT_VARIABLE PYTHON_INCLUDE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+message(STATUS "Python include dir: ${PYTHON_INCLUDE_DIR}")
+
+# Auto-detect NumPy include directory
+execute_process(
+    COMMAND "${PYTHON_ENV_PATH}/bin/python" -c "import numpy; print(numpy.get_include())"
+    OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE NUMPY_STATUS
+)
+# If numpy not found
+if(NOT NUMPY_STATUS EQUAL 0)
+    message(FATAL_ERROR "NumPy not found in the specified Python environment!")
+endif()
+message(STATUS "NumPy include dir: ${NUMPY_INCLUDE_DIR}")
+
+# Auto-detect Python site-packages directory
+execute_process(
+    COMMAND "${PYTHON_ENV_PATH}/bin/python" -c 
+        "import sys, site; print(site.getsitepackages()[0] if hasattr(site, 'getsitepackages') else sys.prefix)"
+    OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE SITE_PKG_STATUS
+)
+# If site-packages not found
+if(NOT EXISTS ${PYTHON_SITE_PACKAGES})
+    message(FATAL_ERROR "Cannot locate Python site-packages directory")
+endif()
+message(STATUS "Installation path: ${PYTHON_SITE_PACKAGES}")
+
 # -------- Source Files --------
 # set(SOURCES
 #     ${CMAKE_SOURCE_DIR}/src/core/okada_dc3d.c
@@ -9,17 +52,7 @@
 #     # ${CMAKE_SOURCE_DIR}/src/core/okada_dc3d0.c
 #     # ${CMAKE_SOURCE_DIR}/src/core/okada_disloc3d0.c
 # )
-
 aux_source_directory (${CMAKE_SOURCE_DIR}/src/core/ SOURCES)
-
-# option(CONDA_ENV_PATH "Path to the conda virtual environment" "/Users/zelong/opt/miniconda3/envs/temp")
-
-
-# From CONDA Virtual Environment:
-set(CONDA_ENV_PATH "/Users/zelong/opt/miniconda3/envs/temp")
-set(PYTHON_INCLUDE_DIR "${CONDA_ENV_PATH}/include/python3.11")
-set(NUMPY_INCLUDE_DIR "${CONDA_ENV_PATH}/lib/python3.11/site-packages/numpy/core/include")
-set(PYTHON_LIBRARY "${CONDA_ENV_PATH}/lib/libpython3.11.dylib")  # For link options
 
 # -------- Objectives --------
 # Pythin C Extension Module:
@@ -54,5 +87,8 @@ set_target_properties(dislocation PROPERTIES
 )
 
 # Install the library to the Python site-packages:
-install(TARGETS dislocation LIBRARY DESTINATION ${CONDA_ENV_PATH}/lib/python3.11/site-packages/)
-
+install(
+    TARGETS dislocation
+    LIBRARY
+    DESTINATION ${PYTHON_SITE_PACKAGES}
+)
