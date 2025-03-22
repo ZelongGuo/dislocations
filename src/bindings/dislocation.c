@@ -2,6 +2,16 @@
 extern "C"
 #endif
 
+/* ------------------------------------------------------------------------------------
+ * A C script binding C and Python codes as a Python C extension. This module integrates
+ * rectangle and triangle dislocation elements for calculating surface deformation and 
+ * stress, strain.
+ *
+ * Zelong Guo
+ * 22.03.2025, @ Potsdam, DE
+ *
+ * ----------------------------------------------------------------------------------*/
+
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
@@ -24,7 +34,7 @@ extern "C"
         return NULL;
     }
 
-    // Check if obs has 3 columns and models has 10 columns
+     // Check if obs has 3 columns and models has 10 columns
     if ((PyArray_SIZE(models) % 10 != 0) || PyArray_SIZE(obs) % 3 != 0) {
         PyErr_SetString(PyExc_ValueError,
                         "The observations should be an array of [n x 3] and models "
@@ -32,7 +42,7 @@ extern "C"
         return NULL;
     }
 
-    // C contiguous, double and aligned, a new reference or a brand new array would be returned
+    // C contiguous (row-major), double and aligned, a new reference or a brand new array would be returned
     obs_ = (PyArrayObject *)PyArray_FROM_OTF((PyObject *)obs, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
     if (obs_ == NULL) {
         PyErr_SetString(PyExc_ValueError, "The observations array is NULL!");
@@ -46,71 +56,44 @@ extern "C"
         return NULL;
     }
 
-    /*
-    // Convert data type to double and C contiguous if needed
-    if ((PyArray_TYPE(obs) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(obs)) {
-        printf("Converting obs to double and C contiguous...\n");
-        obs_ = (PyArrayObject *)PyArray_FROMANY((PyObject *)obs, NPY_DOUBLE, 1, 2,
-    NPY_ARRAY_C_CONTIGUOUS); if (obs_ == NULL) { PyErr_SetString(PyExc_ValueError,
-    "Converting the observations to double type and C contiguous failed! You may
-    also need check its dimension which should be 1-D or 2-D!\n");
-            Py_XDECREF(obs_);
-            Py_XDECREF(models_);
-            return NULL;
-        }
-    }
-    else {
-        Py_INCREF(obs);
-        obs_ = obs;
-    }
-
-
-    if ((PyArray_TYPE(models) != NPY_DOUBLE) || !PyArray_IS_C_CONTIGUOUS(models))
-    { printf("Converting models ton double and C contiguous...\n"); models_ =
-    (PyArrayObject *)PyArray_FROMANY((PyObject *)models, NPY_DOUBLE, 1, 2,
-    NPY_ARRAY_C_CONTIGUOUS); if (models_ == NULL) {
-            PyErr_SetString(PyExc_ValueError, "Converting the models to double
-    type and C contiguous failed! You may also need check its dimension which
-    should be 1-D or 2-D!\n"); Py_DECREF(obs_); Py_XDECREF(models_); return NULL;
-        }
-    }
-    else {
-        models_ = models;
-        Py_INCREF(models);
-    }
-    */
 
     // Get the numbers of models and stations
     npy_intp nmodels = PyArray_SIZE(models_) / 10;
     npy_intp nobs = PyArray_SIZE(obs_) / 3;
-    // printf("nmodels:  %ld\n", nmodels);
-    // printf("nobs:  %ld\n", nobs);
 
     // Accessing data with 1-D C array
     double *c_models = (double *)PyArray_DATA(models_);
     double *c_obs = (double *)PyArray_DATA(obs_);
-    // double *c_models = (double *)PyArray_GETPTR1(models_, 0);
-    // double *c_obs =    (double *)PyArray_GETPTR1(obs_, 0);
 
-    // Initialize U, D, S and flags
+    // Initialize U, S, E and flags
     PyArrayObject *U;
-    // PyArrayObject *D;
     PyArrayObject *S;
     PyArrayObject *E;
     PyArrayObject *flags;
+    /*
     npy_intp dims1 = (npy_intp)nobs * 3;
     npy_intp dims2 = (npy_intp)nobs * 6;
     npy_intp dims3 = (npy_intp)nobs * nmodels;
-    // npy_intp dims4 = (npy_intp)nobs * 9;
     U = (PyArrayObject *)PyArray_ZEROS(1, &dims1, NPY_DOUBLE, 0);
-    // D = (PyArrayObject *)PyArray_ZEROS(1, &dims4, NPY_DOUBLE, 0);
     S = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
     E = (PyArrayObject *)PyArray_ZEROS(1, &dims2, NPY_DOUBLE, 0);
     flags = (PyArrayObject *)PyArray_ZEROS(1, &dims3, NPY_INT, 0);
+    */
+
+    // 2D array
+    npy_intp dims_u[] = {nobs, 3};          // U: (nobs, 3)
+    npy_intp dims_ds[] = {nobs, 6};         // S, E: (nobs, 6)
+    npy_intp dims_flags[] = {nobs, nmodels}; // flags: (nobs, nmodels)
+
+    // Create 2D array, PyArray_ZEROS return a C contiguous araay, it's fine as the input of okada_disloc3d
+    U = (PyArrayObject *)PyArray_ZEROS(2, dims_u, NPY_DOUBLE, 0);
+    S = (PyArrayObject *)PyArray_ZEROS(2, dims_ds, NPY_DOUBLE, 0);
+    E = (PyArrayObject *)PyArray_ZEROS(2, dims_ds, NPY_DOUBLE, 0);
+    flags = (PyArrayObject *)PyArray_ZEROS(2, dims_flags, NPY_INT, 0);
+
     if ((U == NULL) || (S == NULL) || (E == NULL) || (flags == NULL)) {
         PyErr_SetString(PyExc_MemoryError, "Failed to allocate memories for U, S, E and falgs!");
         Py_XDECREF(U);
-        // Py_XDECREF(D);
         Py_XDECREF(S);
         Py_XDECREF(E);
         Py_XDECREF(flags);
@@ -120,7 +103,6 @@ extern "C"
     }
 
     double *U_data = (double *)PyArray_DATA(U);
-    // double *D_data = (double *)PyArray_DATA(D);
     double *S_data = (double *)PyArray_DATA(S);
     double *E_data = (double *)PyArray_DATA(E);
     int *flags_data = (int *)PyArray_DATA(flags);
@@ -141,32 +123,12 @@ extern "C"
         return NULL;
     }
 
-    /*
-    printf("\n");
-    for (npy_intp i =0; i<nobs; i++) {
-        for (int j=0; j< 3; j++) {
-        printf("%f  ", *(U_data+i*3+j));
-        }
-        printf("\n");
-    }
-
-    printf("\n");
-    for (npy_intp i =0; i<nobs; i++) {
-        for (int j=0; j< 9; j++) {
-        printf("%f  ", *(S_data+3*i+j));
-        }
-        printf("\n");
-    }
-    */
-
     // free memory
     Py_DECREF(obs_);
     Py_DECREF(models_);
     obs_ = NULL;
     models_ = NULL;
 
-    // return a Python Object Pointer
-    // Py_RETURN_NONE;
     return results;
 }
 
@@ -204,9 +166,9 @@ PyDoc_STRVAR(okada_rect_doc,
              "  - nu          : Poisson's ratio, \n"
              "\n"
              "- Output:\n"
-             "  - u           : displacements, ux, uy, uz, \n"
-             "  - s           : 6 independent stress tensor components, sxx, sxy, sxz, syy, syz, szz, \n"
-             "  - e           : 6 independent strain tensor components, exx, exy, exz, eyy, eyz, ezz, \n"
+             "  - u           : 2-D array of displacements, ux, uy, uz, [nobs x 3] \n"
+             "  - s           : 2-D array of 6 independent stress tensor components, sxx, sxy, sxz, syy, syz, szz, [nobs x 6] \n"
+             "  - e           : 2-D array of 6 independent strain tensor components, exx, exy, exz, eyy, eyz, ezz, [nobs x 6] \n"
              "  - flags       : flags [nobs x nmodels].\n"
              "                  flags = 0 : normal,\n"
              "                  flags = 1: the Z value of the obs > 0,\n"
