@@ -3,13 +3,16 @@
 #include <math.h>
 #include "mehdi.h"
 
-/*-----------------------------------------------------------------------------------------------
- * For TDdispHS.c
+/*---------------------------------------------------------
+ *  Functions used for TDdispHS.c
  *
- * Zelong Guo, @ Potsdam, Germany, 2025
- * zelong.guo@outlook.com
+ *  Referring to the Matlab codes of Mehdi
  *
- ------------------------------------------------------------------------------------------------*/
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ * ---------------------------------------------------------*/
 
 void TDdispFS4HS(double X, double Y, double Z, double P1[3], double P2[3], double P3[3],
               double Ss, double Ds, double Ts, double nu,

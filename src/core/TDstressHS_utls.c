@@ -3,6 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*---------------------------------------------------------
+ *  Functions used for TDstressHS.c
+ *
+ *  Referring to the Matlab codes of Mehdi
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ * ---------------------------------------------------------*/
+
 /*-----------------------------------------------------------------------------------------------*/
 
 void TDstressFS4HS(double X, double Y, double Z, double P1[3], double P2[3],
