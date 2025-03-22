@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include "mehdi.h"
 
+/*---------------------------------------------------------
+ *  Main function used for calculating stress in half space.
+ *
+ *  Referring to the Matlab codes of Mehdi
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ * ---------------------------------------------------------*/
+
 // Function to compute stresses and strains in an elastic half-space
 void TDstressHS(double X, double Y, double Z, double P1[3], double P2[3], double P3[3],
                 double Ss, double Ds, double Ts, double mu, double lambda,

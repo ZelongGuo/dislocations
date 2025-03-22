@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include "mehdi.h"
 
+/*---------------------------------------------------------
+ *  Main function used for calculating disp in full space.
+ *
+ *  Referring to the Matlab codes of Meade
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ * ---------------------------------------------------------*/
+
 void TDdispFS(double X, double Y, double Z, double P1[3], double P2[3], double P3[3],
               double Ss, double Ds, double Ts, double nu,
               double *ue, double *un, double *uv) {

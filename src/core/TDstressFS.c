@@ -2,6 +2,17 @@
 #include <math.h>
 #include <stdlib.h>
 
+/*---------------------------------------------------------
+ *  Main function used for calculating stress in full space.
+ *
+ *  Referring to the Matlab codes of Mehdi
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ * ---------------------------------------------------------*/
+
 void TDstressFS(double X, double Y, double Z, double P1[3], double P2[3],
                 double P3[3], double Ss, double Ds, double Ts, double mu,
                 double lambda, double Stress[6], double Strain[6]) {

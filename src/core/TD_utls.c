@@ -2,6 +2,19 @@
 #include <stdlib.h>
 #include "mehdi.h"
 
+/*---------------------------------------------------------
+ *  Tow functions used for calculating disp and stress in
+ *  both full and half space.
+ *
+ *  Referring to the Matlab codes of Mehdi
+ *
+ *  Author: Zelong Guo
+ *  03.2025, @ Potsdam, Germany
+ *  zelong.guo@outlook.com
+ *
+ *---------------------------------------------------------*/
+
+
 
 /*-----------------------------------------------------------------------------------------------*/
 
