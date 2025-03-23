@@ -14,5 +14,5 @@ set(CMAKE_C_COMPILER gcc)
 
 # ------------------ Sub-targets --------------------
 # include(${CMAKE_SOURCE_DIR}/cmake/tests.cmake)
-include(${CMAKE_SOURCE_DIR}/cmake/dislocation.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/dislocations.cmake)
 
