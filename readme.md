@@ -1,6 +1,6 @@
 # Dislocation
 
-### **Still Under Developing...**  
+### **Still Under Developing...**
 
 Calculating elastic deformation from dislocation sources
 
@@ -9,7 +9,7 @@ Mind the unit: recommend the International System of Units.
 Though strain is a dimensionless quantity, specifying dislocation unit same with fault parameters would help avoid further transformation.
 
 ## Requirments:  
-Numpy
+Numpy > 1/7
 
 **Point source model codes have not been tested yet, use them at your own risk.**
 
