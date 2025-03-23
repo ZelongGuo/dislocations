@@ -1,7 +1,7 @@
 build/*
-bin/
+dist/*
 .idea
 **/.DS_Store
 docs/*
-!docs/*.pdf
+#!docs/*.pdf
 TODO.md
