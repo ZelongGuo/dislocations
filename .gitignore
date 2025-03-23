@@ -1,9 +1,7 @@
-disloca*.so
 build/*
 bin/
 .idea
-src/main
 **/.DS_Store
 docs/*
 !docs/*.pdf
-Todo.md
+TODO.md
