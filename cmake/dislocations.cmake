@@ -1,7 +1,7 @@
-# This is for CMake File for Dislocation Extension Module
+# This is for CMake File for Dislocations Extension Module
 # Zelong Guo, @ Potsdam, DE
 
-# ------------------------ Dislocation ------------------------
+# ------------------------ Dislocations ------------------------
 # -------- Python related stuff  --------
 # Allow user to specify the Python environment path:
 # cmake .. -DPYTHON_ENV_PATH=/path/to/your/env
@@ -56,11 +56,11 @@ aux_source_directory (${CMAKE_SOURCE_DIR}/src/core/ SOURCES)
 
 # -------- Objectives --------
 # Pythin C Extension Module:
-add_library(dislocation SHARED)
-target_sources(dislocation PRIVATE ${CMAKE_SOURCE_DIR}/src/bindings/dislocation.c ${SOURCES})
+add_library(dislocations SHARED)
+target_sources(dislocations PRIVATE ${CMAKE_SOURCE_DIR}/src/bindings/dislocations.c ${SOURCES})
 
 # Including header files of Python and Numpy:
-target_include_directories(dislocation PRIVATE
+target_include_directories(dislocations PRIVATE
     ${CMAKE_SOURCE_DIR}/include/
     ${PYTHON_INCLUDE_DIR}
     ${NUMPY_INCLUDE_DIR}
@@ -68,7 +68,7 @@ target_include_directories(dislocation PRIVATE
 
 # ------ Build Options -------
 # Complier Options, if you want debugging:
-target_compile_options(dislocation PRIVATE
+target_compile_options(dislocations PRIVATE
     -O2
     -fPIC
 )
@@ -81,14 +81,14 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols -Wl,--enable-auto-import")
 endif()
 
-set_target_properties(dislocation PROPERTIES
+set_target_properties(dislocations PROPERTIES
     SUFFIX ".so"
     PREFIX ""
 )
 
 # Install the library to the Python site-packages:
 install(
-    TARGETS dislocation
+    TARGETS dislocations
     LIBRARY
     DESTINATION ${PYTHON_SITE_PACKAGES}
 )
