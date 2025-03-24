@@ -14,7 +14,7 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
      * Input Parameters:
      *
      * models: [nmodel * 10], a pointer of 1-D array
-     *         easting, northing, depth (>=0, defined as the depth of fault
+     *         easting, northing, up (<=0, defined as the depth of fault
      * upper center point, easting and northing likewise) length, width, strike,
      * dip, str-slip, dip-selip, opening 
      * obss  : [nobs * 3], a pointer of 1-D array, in which the Z <= 0 
@@ -123,8 +123,9 @@ void okada_disloc3d(double *models, int nmodel, double *obss, int nobs, double m
             disl3 = model[9];
 
             // the fault reference point is upper center point
-            // the depth is the depth of upper center point
-            depth = model[2];
+            // the depth is the depth of upper center point, should be a positive value in Okada
+            // fault system, i.e., the -model[2] (up value) here
+            depth = -model[2];
             al1 = -0.5 * model[3];
             al2 = 0.5 * model[3];
             aw1 = -1.0 * model[4];

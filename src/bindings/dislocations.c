@@ -32,6 +32,7 @@ static PyObject *rde(PyObject *self, PyObject *args) {
 
     // Parse arguments from Python and make data type check, borrowed references for "O"
     if (!PyArg_ParseTuple(args, "O!O!dd", &PyArray_Type, &obs, &PyArray_Type, &models, &mu, &nu)) {
+        PyErr_Print();  // detailed message
         PyErr_SetString(PyExc_TypeError, "Expected NumPy arrays and Python floats as input.");
         return NULL;
     }
@@ -317,13 +318,6 @@ static PyObject *tde_meade(PyObject *self, PyObject *args) {
     return results;
 }
 
-// ----------------------------------------------------------------------
-static PyObject *add(PyObject *self, PyObject *args) {
-    double x;
-    double y;
-    PyArg_ParseTuple(args, "dd", &x, &y);
-    return PyFloat_FromDouble(x + y);
-}
 
 // ----------------------------------------------------------------------
 
@@ -336,10 +330,10 @@ PyDoc_STRVAR(rde_doc,
              "  - observations: An 2-D NumPy array of [nobs x 3], xyz Cartesian coordinates of stations, \n"
              "                  in which z values should <= 0. \n"
              "  - models      : An 2-D Numpy array of [nmodles x 10], in which: \n"
-             "                [x_uc, y_uc, depth, length, width, strike, dip, str_slip, dip_slip, opening] \n"
+             "                [x_uc, y_uc, z_uc, length, width, strike, dip, str_slip, dip_slip, opening] \n"
              "                 x_uc     : x Cartesian coordinates of the fault reference point (center of fault upper edge), \n"
              "                 y_uc     : y Cartesian coordinates of the fault reference point (center of fault upper edge), \n"
-             "                 depth    : depth of the fault reference point (center of fault upper edge, always positive vales), \n"
+             "                 z_uc     : z Cartesian coordinates of the fault reference point (center of fault upper edge), should be negtive,\n"
              "                 length   : length of the fault patches, \n"
              "                 width    : width of the fault patches, \n"
              "                 strike   : strike angles of the fault patches, \n"
@@ -436,7 +430,6 @@ PyDoc_STRVAR(tde_meade_doc,
 // module funcs list
 static PyMethodDef method_funcs[] = {
     // function name, function pointer, argument flag, function docs
-    {"add",       add,       METH_VARARGS, "Add two numbers together."},
     {"rde",       rde,       METH_VARARGS, rde_doc},
     {"tde",       tde,       METH_VARARGS, tde_doc},
     {"tde_meade", tde_meade, METH_VARARGS, tde_meade_doc},
@@ -447,7 +440,7 @@ static PyMethodDef method_funcs[] = {
 static struct PyModuleDef dislocations = {
     PyModuleDef_HEAD_INIT,
     "dislocations",                         // module name
-    "This is a module named dislocations, which is a Python C extension integrating rectangle and triangle dislocation elements for calculating the displacements, stress and strain of the observation stations in elastic space. The codes are implemented based the papers of Okada 1992, Meade 2007, Nikkhoo and Walter 2015.\n "
+    "This is a module named dislocations, which is a Python C extension integrating rectangle and triangle dislocation elements for calculating the displacements,\n stress and strain of the observation stations in elastic space. The codes are implemented based the papers of Okada 1992, Meade 2007, Nikkhoo and Walter 2015.\n "
     "Zelong Guo, @ Potsdam, DE\n"        // author
     "Email: zelong.guo@outlook.com\n",
                                           // module docs, could be called by help(module_name)
@@ -458,12 +451,14 @@ static struct PyModuleDef dislocations = {
 // ----------------------------------------------------------------------
 PyMODINIT_FUNC PyInit_dislocations() {
     // printf("Dislocations Module has been imported!\n");
-
     // Initialize Numpy
-    PyObject *module = PyModule_Create(&dislocations);
     import_array();
     if (PyErr_Occurred()) {
-        Py_DECREF(module);
+        return NULL;
+    }
+
+    PyObject *module = PyModule_Create(&dislocations);
+    if (module == NULL) {
         return NULL;
     }
     return module;
