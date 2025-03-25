@@ -38,6 +38,16 @@ void TDstressFS(double X, double Y, double Z, double P1[3], double P2[3],
     Vnorm[1] /= norm_Vnorm;
     Vnorm[2] /= norm_Vnorm;
 
+    /* Enforce normVec z component upward for normal situations */
+    if (Vnorm[2] < 0) {
+        for (int i = 0; i < 3; i++) {
+            Vnorm[i] = -Vnorm[i];
+            double temp = P2[i];
+            P2[i] = P3[i];
+            P3[i] = temp;
+        }
+    }
+
     double eY[3] = {0.0, 1.0, 0.0};
     double eZ[3] = {0.0, 0.0, 1.0};
     Vstrike[0] = eZ[1] * Vnorm[2] - eZ[2] * Vnorm[1];

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "mehdi.h"
 
 /*---------------------------------------------------------
@@ -22,6 +23,29 @@ void TDstressHS(double X, double Y, double Z, double P1[3], double P2[3], double
         fprintf(stderr, "Error: Half-space solution: Z coordinates must be negative!\n");
         // exit(1); // Exit with error (no exception handling in C like MATLAB)
         exit(EXIT_FAILURE);
+    }
+
+    // Calculate unit normal vector to the fault plane
+    double Vnorm[3];
+    Vnorm[0] =
+        (P2[1] - P1[1]) * (P3[2] - P1[2]) - (P2[2] - P1[2]) * (P3[1] - P1[1]);
+    Vnorm[1] =
+        (P2[2] - P1[2]) * (P3[0] - P1[0]) - (P2[0] - P1[0]) * (P3[2] - P1[2]);
+    Vnorm[2] =
+        (P2[0] - P1[0]) * (P3[1] - P1[1]) - (P2[1] - P1[1]) * (P3[0] - P1[0]);
+    double norm_Vnorm =
+        sqrt(Vnorm[0] * Vnorm[0] + Vnorm[1] * Vnorm[1] + Vnorm[2] * Vnorm[2]);
+    Vnorm[0] /= norm_Vnorm;
+    Vnorm[1] /= norm_Vnorm;
+    Vnorm[2] /= norm_Vnorm;
+
+    /* Enforce normVec z component upward for normal situations */
+    if (Vnorm[2] < 0) {
+        for (int i = 0; i < 3; i++) {
+            double temp = P2[i];
+            P2[i] = P3[i];
+            P3[i] = temp;
+        }
     }
 
     // Calculate main dislocation contribution to strains and stresses
