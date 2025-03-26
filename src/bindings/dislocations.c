@@ -333,7 +333,7 @@ PyDoc_STRVAR(rde_doc,
              "                [x_uc, y_uc, z_uc, length, width, strike, dip, str_slip, dip_slip, opening] \n"
              "                 x_uc     : x Cartesian coordinates of the fault reference point (center of fault upper edge), \n"
              "                 y_uc     : y Cartesian coordinates of the fault reference point (center of fault upper edge), \n"
-             "                 z_uc     : z Cartesian coordinates of the fault reference point (center of fault upper edge), should be negtive,\n"
+             "                 z_uc     : z Cartesian coordinates of the fault reference point (center of fault upper edge), should be <=0,\n"
              "                 length   : length of the fault patches, \n"
              "                 width    : width of the fault patches, \n"
              "                 strike   : strike angles of the fault patches, \n"
