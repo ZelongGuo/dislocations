@@ -392,9 +392,28 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
         normVec.y = 0.0;
     }
 
-    Vector3 strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
-    Vector3 dipVec = crossProduct(normVec, strikeVec);
+    /* If it is horizontal fault, ss-ds-ts system defined as follows: */
+    Vector3 strikeVec;
+    Vector3 dipVec;
+    if (normVec.z == 1) {  /* in this case noeVec = (0,0,1) */
+        strikeVec.x = 1.0;
+        strikeVec.y = 0.0;
+        strikeVec.z = 0.0;
+        dipVec.x    = 0.0;
+        dipVec.y    = 1.0;
+        dipVec.z    = 0.0;
+    }
+    else {
+        // strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
+        // dipVec = crossProduct(normVec, strikeVec);
+        strikeVec.x = -sin(atan2(normVec.y, normVec.x));
+        strikeVec.y = cos(atan2(normVec.y, normVec.x));
+        strikeVec.z = 0;
+        dipVec      = crossProduct(normVec, strikeVec);
+    }
 
+    // Vector3 strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
+    // Vector3 dipVec = crossProduct(normVec, strikeVec);
     double slipComp[3] = {ss, ds, ts};
     Vector3 slipVec = {strikeVec.x * slipComp[0] + dipVec.x * slipComp[1] + normVec.x * slipComp[2],
                        strikeVec.y * slipComp[0] + dipVec.y * slipComp[1] + normVec.y * slipComp[2],
@@ -549,9 +568,26 @@ void CalTriStrains(const double sx, const double sy, const double sz, double *x,
         normVec.y = 0.0;
     }
 
-    Vector3 strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
-    Vector3 dipVec = crossProduct(normVec, strikeVec);
+    /* If it is horizontal fault, ss-ds-ts system defined as follows: */
+    Vector3 strikeVec;
+    Vector3 dipVec;
+    if (normVec.z == 1) {  /* in this case noeVec = (0,0,1) */
+        strikeVec.x = 1.0;
+        strikeVec.y = 0.0;
+        strikeVec.z = 0.0;
+        dipVec.x    = 0.0;
+        dipVec.y    = 1.0;
+        dipVec.z    = 0.0;
+    }
+    else {
+        strikeVec.x = -sin(atan2(normVec.y, normVec.x));
+        strikeVec.y = cos(atan2(normVec.y, normVec.x));
+        strikeVec.z = 0;
+        dipVec      = crossProduct(normVec, strikeVec);
+    }
 
+    // Vector3 strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
+    // Vector3 dipVec = crossProduct(normVec, strikeVec);
     double slipComp[3] = {ss, ds, ts};
     Vector3 slipVec = {strikeVec.x * slipComp[0] + dipVec.x * slipComp[1] + normVec.x * slipComp[2],
                        strikeVec.y * slipComp[0] + dipVec.y * slipComp[1] + normVec.y * slipComp[2],
