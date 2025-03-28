@@ -37,6 +37,7 @@ void TDdispFS4HS(double X, double Y, double Z, double P1[3], double P2[3], doubl
     Vnorm[2] /= norm_Vnorm;
 
     // Base vectors
+    double eX[3] = {1.0, 0.0, 0.0};
     double eY[3] = {0.0, 1.0, 0.0};
     double eZ[3] = {0.0, 0.0, 1.0};
 
@@ -45,12 +46,12 @@ void TDdispFS4HS(double X, double Y, double Z, double P1[3], double P2[3], doubl
     Vstrike[1] = eZ[2] * Vnorm[0] - eZ[0] * Vnorm[2];
     Vstrike[2] = eZ[0] * Vnorm[1] - eZ[1] * Vnorm[0];
 
-    // Check if Vstrike is zero and adjust
+    // Check if Vstrike is zero and adjust, i.e., a horizntal fault
     double norm_Vstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] + Vstrike[2] * Vstrike[2]);
     if (norm_Vstrike == 0.0) {
-        Vstrike[0] = eY[0] * Vnorm[2];
-        Vstrike[1] = eY[1] * Vnorm[2];
-        Vstrike[2] = eY[2] * Vnorm[2];
+        Vstrike[0] = eX[0] * Vnorm[2];
+        Vstrike[1] = eX[1] * Vnorm[2];
+        Vstrike[2] = eX[2] * Vnorm[2];
         norm_Vstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] + Vstrike[2] * Vstrike[2]);
     // For horizontal elements in case of half-space calculation!!!
     // Correct the strike vector of image dislocation only
@@ -412,6 +413,7 @@ void TDdisp_HarFunc(double X, double Y, double Z, double P1[3], double P2[3], do
     Vnorm[2] /= normV;
 
     // Define standard unit vectors
+    double eX[3] = {1.0, 0.0, 0.0};
     double eY[3] = {0, 1, 0};
     double eZ[3] = {0, 0, 1};
 
@@ -425,9 +427,9 @@ void TDdisp_HarFunc(double X, double Y, double Z, double P1[3], double P2[3], do
     // Handle case where the normal vector is purely vertical
     double normVstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] + Vstrike[2] * Vstrike[2]);
     if (normVstrike == 0) {
-        Vstrike[0] = eY[0] * Vnorm[2];
-        Vstrike[1] = eY[1] * Vnorm[2];
-        Vstrike[2] = eY[2] * Vnorm[2];
+        Vstrike[0] = eX[0] * Vnorm[2];
+        Vstrike[1] = eX[1] * Vnorm[2];
+        Vstrike[2] = eX[2] * Vnorm[2];
     } else {
         Vstrike[0] /= normVstrike;
         Vstrike[1] /= normVstrike;

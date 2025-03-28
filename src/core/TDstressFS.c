@@ -48,6 +48,7 @@ void TDstressFS(double X, double Y, double Z, double P1[3], double P2[3],
         }
     }
 
+    double eX[3] = {1.0, 0.0, 0.0};
     double eY[3] = {0.0, 1.0, 0.0};
     double eZ[3] = {0.0, 0.0, 1.0};
     Vstrike[0] = eZ[1] * Vnorm[2] - eZ[2] * Vnorm[1];
@@ -57,9 +58,9 @@ void TDstressFS(double X, double Y, double Z, double P1[3], double P2[3],
         sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] +
              Vstrike[2] * Vstrike[2]);
     if (norm_Vstrike == 0.0) {
-        Vstrike[0] = eY[0] * Vnorm[2];
-        Vstrike[1] = eY[1] * Vnorm[2];
-        Vstrike[2] = eY[2] * Vnorm[2];
+        Vstrike[0] = eX[0] * Vnorm[2];
+        Vstrike[1] = eX[1] * Vnorm[2];
+        Vstrike[2] = eX[2] * Vnorm[2];
         norm_Vstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] +
                             Vstrike[2] * Vstrike[2]);
     }

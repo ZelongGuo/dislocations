@@ -41,6 +41,7 @@ void TDstressFS4HS(double X, double Y, double Z, double P1[3], double P2[3],
     Vnorm[1] /= norm_Vnorm;
     Vnorm[2] /= norm_Vnorm;
 
+    double eX[3] = {1.0, 0.0, 0.0};
     double eY[3] = {0.0, 1.0, 0.0};
     double eZ[3] = {0.0, 0.0, 1.0};
     Vstrike[0] = eZ[1] * Vnorm[2] - eZ[2] * Vnorm[1];
@@ -50,9 +51,9 @@ void TDstressFS4HS(double X, double Y, double Z, double P1[3], double P2[3],
         sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] +
              Vstrike[2] * Vstrike[2]);
     if (norm_Vstrike == 0.0) {
-        Vstrike[0] = eY[0] * Vnorm[2];
-        Vstrike[1] = eY[1] * Vnorm[2];
-        Vstrike[2] = eY[2] * Vnorm[2];
+        Vstrike[0] = eX[0] * Vnorm[2];
+        Vstrike[1] = eX[1] * Vnorm[2];
+        Vstrike[2] = eX[2] * Vnorm[2];
         norm_Vstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] +
                             Vstrike[2] * Vstrike[2]);
     // For horizontal elements in case of half-space calculation!!!
@@ -1159,6 +1160,7 @@ void TDstress_HarFunc(double X, double Y, double Z, double P1[3], double P2[3], 
     Vnorm[2] /= normVnorm;
 
     // Define unit vectors
+    double eX[3] = {1.0, 0.0, 0.0};
     double eY[3] = {0.0, 1.0, 0.0}; // Northward direction
     double eZ[3] = {0.0, 0.0, 1.0}; // Upward direction
 
@@ -1171,9 +1173,9 @@ void TDstress_HarFunc(double X, double Y, double Z, double P1[3], double P2[3], 
     // Handle special case where Vstrike is zero (horizontal TD)
     double normVstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] + Vstrike[2] * Vstrike[2]);
     if (normVstrike == 0.0) {
-        Vstrike[0] = eY[0] * Vnorm[2];
-        Vstrike[1] = eY[1] * Vnorm[2];
-        Vstrike[2] = eY[2] * Vnorm[2];
+        Vstrike[0] = eX[0] * Vnorm[2];
+        Vstrike[1] = eX[1] * Vnorm[2];
+        Vstrike[2] = eX[2] * Vnorm[2];
         normVstrike = sqrt(Vstrike[0] * Vstrike[0] + Vstrike[1] * Vstrike[1] + Vstrike[2] * Vstrike[2]);
     }
     Vstrike[0] /= normVstrike;
