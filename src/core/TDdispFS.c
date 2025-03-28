@@ -44,6 +44,24 @@ void TDdispFS(double X, double Y, double Z, double P1[3], double P2[3], double P
             P3[i] = temp;
         }
     }
+    /* if the fault plane is vertical fault */
+    if ((Vnorm[2] == 0) && (Vnorm[1] > 0)) {
+        for (int i = 0; i < 3; i++) {
+            Vnorm[i] = -Vnorm[i];
+            double temp = P2[i];
+            P2[i] = P3[i];
+            P3[i] = temp;
+        }
+    }
+    /* Special case: if the fault plane is vertical fault and align with N axis in ENU */
+    if (Vnorm[0] == -1)  {
+        for (int i = 0; i < 3; i++) {
+            Vnorm[i] = -Vnorm[i];
+            double temp = P2[i];
+            P2[i] = P3[i];
+            P3[i] = temp;
+        }
+    }
 
     // Base vectors
     double eX[3] = {1.0, 0.0, 0.0};
