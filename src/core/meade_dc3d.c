@@ -368,8 +368,26 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
     normalize(&normVec);
 
     /* Enforce clockwise circulation, i.e., the normal vector of the triangle
-     * plane should be upward */
+     * plane should be upward for non-horzontal and non-vertical fault */
     if (normVec.z < 0) {
+        normVec.x = -normVec.x;
+        normVec.y = -normVec.y;
+        normVec.z = -normVec.z;
+        swap(&x[1], &x[2]);
+        swap(&y[1], &y[2]);
+        swap(&z[1], &z[2]);
+    }
+    /* if the fault plane is vertical fault */
+    if ((normVec.z == 0) && (normVec.y > 0)) {
+        normVec.x = -normVec.x;
+        normVec.y = -normVec.y;
+        normVec.z = -normVec.z;
+        swap(&x[1], &x[2]);
+        swap(&y[1], &y[2]);
+        swap(&z[1], &z[2]);
+    }
+    /* Special case: if the fault plane is vertical fault and align with N axis in ENU */
+    if (normVec.x == 1)  {
         normVec.x = -normVec.x;
         normVec.y = -normVec.y;
         normVec.z = -normVec.z;
@@ -391,19 +409,20 @@ void CalTriDisps(const double sx, const double sy, const double sz, double *x, d
     if (normVec.y == -0.0) {
         normVec.y = 0.0;
     }
+    if (normVec.z == -0.0) {
+        normVec.z = 0.0;
+    }
 
-    /* If it is horizontal fault, ss-ds-ts system defined as follows: */
+    /* Handling with diffrent faults, diffrent ss-ds-ts system is defined */
     Vector3 strikeVec;
     Vector3 dipVec;
-    if (normVec.z == 1) {  /* in this case noeVec = (0,0,1) */
+    if (normVec.z == 1) {  /* in this case normVec = (0,0,1), the fault plane is horizontal fault */
         strikeVec.x = 1.0;
         strikeVec.y = 0.0;
         strikeVec.z = 0.0;
-        dipVec.x    = 0.0;
-        dipVec.y    = 1.0;
-        dipVec.z    = 0.0;
+        dipVec      = crossProduct(normVec, strikeVec);
     }
-    else {
+    else { /* all other cases */
         // strikeVec = {-sin(atan2(normVec.y, normVec.x)), cos(atan2(normVec.y, normVec.x)), 0};
         // dipVec = crossProduct(normVec, strikeVec);
         strikeVec.x = -sin(atan2(normVec.y, normVec.x));
@@ -553,6 +572,25 @@ void CalTriStrains(const double sx, const double sy, const double sz, double *x,
         swap(&y[1], &y[2]);
         swap(&z[1], &z[2]);
     }
+    /* if the fault plane is vertical fault */
+    if ((normVec.z == 0) && (normVec.y > 0)) {
+        normVec.x = -normVec.x;
+        normVec.y = -normVec.y;
+        normVec.z = -normVec.z;
+        swap(&x[1], &x[2]);
+        swap(&y[1], &y[2]);
+        swap(&z[1], &z[2]);
+    }
+    /* Special case: if the fault plane is vertical fault and align with N axis in ENU */
+    if (normVec.x == 1)  {
+        normVec.x = -normVec.x;
+        normVec.y = -normVec.y;
+        normVec.z = -normVec.z;
+        swap(&x[1], &x[2]);
+        swap(&y[1], &y[2]);
+        swap(&z[1], &z[2]);
+    }
+
 
     /* ------------------------------------
      * NOTE: Based on IEC-60559:
@@ -567,6 +605,9 @@ void CalTriStrains(const double sx, const double sy, const double sz, double *x,
     if (normVec.y == -0.0) {
         normVec.y = 0.0;
     }
+    if (normVec.z == -0.0) {
+        normVec.z = 0.0;
+    }
 
     /* If it is horizontal fault, ss-ds-ts system defined as follows: */
     Vector3 strikeVec;
@@ -575,9 +616,7 @@ void CalTriStrains(const double sx, const double sy, const double sz, double *x,
         strikeVec.x = 1.0;
         strikeVec.y = 0.0;
         strikeVec.z = 0.0;
-        dipVec.x    = 0.0;
-        dipVec.y    = 1.0;
-        dipVec.z    = 0.0;
+        dipVec      = crossProduct(normVec, strikeVec);
     }
     else {
         strikeVec.x = -sin(atan2(normVec.y, normVec.x));
