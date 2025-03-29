@@ -1,2 +1,2 @@
 # src/__init__.py, for relative imports
-from .dislocations import *
+from .dislocs import *

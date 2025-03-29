@@ -4,7 +4,7 @@ requires = ["scikit-build-core>=0.4.0", "cmake>=3.12", "numpy>=2.0.0"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "dislocations"
+name = "dislocs"
 version = "0.1.0"
 authors = [{ name = "Zelong Guo", email = "zelong.guo@outlook.com" }]
 description = "A Python C extension for calculating displacement, stress and strian based on rectangular and triangular dislocation elements (RDE and TDE) in elastic half space."
@@ -12,7 +12,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["numpy>=2.0.0"]
 license = { file = "LICENSE" }
-keywords = ["okada", "dislocation", "geophysics", "tde"]
+keywords = ["okada", "dislocation", "geophysics", "rde", "tde",]
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -21,6 +21,6 @@ classifiers = [
 ]
 
 [tool.scikit-build]
-wheel.packages = ["dislocations"]
+wheel.packages = ["dislocs"]
 wheel.expand-macos-universal-tags = true  # macOS optional
 

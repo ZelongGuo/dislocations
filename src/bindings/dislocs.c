@@ -324,7 +324,7 @@ static PyObject *tde_meade(PyObject *self, PyObject *args) {
 PyDoc_STRVAR(rde_doc,
              "rde calculates displacement, stress and strain using Okada rectangle dislocation source in elastic half space.\n"
              "\n"
-             "[u, s, e, flags] = dislocations.rde(rbservations, models, mu, nu)\n"
+             "[u, s, e, flags] = dislocs.rde(rbservations, models, mu, nu)\n"
 
              "- Arguments:\n"
              "  - observations: An 2-D NumPy array of [nobs x 3], xyz Cartesian coordinates of stations, \n"
@@ -365,7 +365,7 @@ PyDoc_STRVAR(rde_doc,
 PyDoc_STRVAR(tde_doc,
              "tde calculates displacement, stress and strain using triangle dislocation source in elastic half space, based on Nikkhoo and Walter 2015.\n"
              "\n"
-             "[u, s, e] = dislocations.tde(observations, models, mu, nu)\n"
+             "[u, s, e] = dislocs.tde(observations, models, mu, nu)\n"
 
              "- Arguments:\n"
              "  - observations: An 2-D NumPy array of [nobs x 3], xyz Cartesian coordinates of stations, \n"
@@ -397,7 +397,7 @@ PyDoc_STRVAR(tde_meade_doc,
              "tde_meade calculates displacement, stress and strain using triangle dislocation source in elastic half space, based on the algorithm of Meade 2007.\n"
             "Caution: The algorithm have singulaties and numerical unstabilities problem, thus the tde based on Nikkhoo and Walter is strongly recommended.\n"
              "\n"
-             "[u, s, e] = dislocations.tde_meade(observations, models, mu, nu)\n"
+             "[u, s, e] = dislocs.tde_meade(observations, models, mu, nu)\n"
 
              "- Arguments:\n"
              "  - observations: An 2-D NumPy array of [nobs x 3], xyz Cartesian coordinates of stations, \n"
@@ -437,10 +437,10 @@ static PyMethodDef method_funcs[] = {
 
 // ----------------------------------------------------------------------
 // module definition
-static struct PyModuleDef dislocations = {
+static struct PyModuleDef dislocs = {
     PyModuleDef_HEAD_INIT,
-    "dislocations",                         // module name
-    "This is a module named dislocations, which is a Python C extension integrating rectangle and triangle dislocation elements for calculating the displacements,\n stress and strain of the observation stations in elastic space. The codes are implemented based the papers of Okada 1992, Meade 2007, Nikkhoo and Walter 2015.\n "
+    "dislocs",                         // module name
+    "This is a module named dislocs, which is a Python C extension integrating rectangle and triangle dislocation elements for calculating the displacements,\n stress and strain of the observation stations in elastic space. The codes are implemented based the papers of Okada 1992, Meade 2007, Nikkhoo and Walter 2015.\n "
     "Zelong Guo, @ Potsdam, DE\n"        // author
     "Email: zelong.guo@outlook.com\n",
                                           // module docs, could be called by help(module_name)
@@ -449,15 +449,15 @@ static struct PyModuleDef dislocations = {
 };
 
 // ----------------------------------------------------------------------
-PyMODINIT_FUNC PyInit_dislocations() {
-    // printf("Dislocations Module has been imported!\n");
+PyMODINIT_FUNC PyInit_dislocs() {
+    // printf("Dislocs Module has been imported!\n");
     // Initialize Numpy
     import_array();
     if (PyErr_Occurred()) {
         return NULL;
     }
 
-    PyObject *module = PyModule_Create(&dislocations);
+    PyObject *module = PyModule_Create(&dislocs);
     if (module == NULL) {
         return NULL;
     }
