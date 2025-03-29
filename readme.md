@@ -12,7 +12,7 @@ Mind the unit: recommend the International System of Units. Though strain is a d
 
 ## Features:
 - Unified the strike-slip, dip-slip, and tensile coordinate systems for special faults (vertical faults, horizontal faults)
-- Vertexes of TDE are order-free, more user-friendly
+- Integration of TDE and RDE implementations, vertexes of TDE are order-free, more user-friendly
 
 ![An example of RDE and TDEs output](./tests/displacement_field.png)
 
