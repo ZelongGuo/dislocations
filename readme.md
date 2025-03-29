@@ -1,4 +1,4 @@
-# Dislocation
+# Dislocations
 
 ### **Still Under Developing...**
 
@@ -9,14 +9,41 @@ Mind the unit: recommend the International System of Units.
 Though strain is a dimensionless quantity, specifying dislocation unit same with fault parameters would help avoid further transformation.
 
 ## Requirments:  
-Numpy > 1/7
+Numpy > 1.7
 
 **Point source model codes have not been tested yet, use them at your own risk.**
 
-Mehdi's codes is recommended because of no singularities and more numerically stable, even though I
-also included Meade's codes in the package.
+## Improvement:
+Mehdi's codes is recommended because of numerical instabilities and no artefact singularities, even though I
+also included Meade's codes in the package. I integrated and improved Mehdi's code to ensure that the normal vectors of triangular elements are always upward, regardless of the vertex order, making it more user-friendly.
+
+Unified the strike-slip, dip-slip, and tensile coordinate systems for special faults (vertical faults, horizontal faults)
 
 ## 1. Compile and Install
+
+### By Pypi
+The easiest of building and installing the package is by Pypi:
+```python 
+pip install Dislocations
+```
+
+On MacOS platform it works pretty well, while it is not tested on Win and Linux platforms, though
+it is also supposed to work. In case of not working, please try below using CMake building from the
+source code directly:
+
+### Build and install from the source codes 
+```sh
+# In the projrct directory, and strongly recommend executing under a python virtual env
+mkdir -p build
+cd build
+cmake .. 
+make install
+```
+Then a shared library named `dislocations.so` should generated in your `build`  and also
+your current python `site-packages` directories (In fact you may copy the library to your python
+`site-packages` directory and then you are supposed to import it to python).
+
+
 ### Compile (by shared library/dynamic link library, dll)
 Using `setup.py` file, building shared library in current directory otherwise in ./build
 ```bash
