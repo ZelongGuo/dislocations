@@ -4,5 +4,5 @@ dist/*
 **/.DS_Store
 docs/*
 #!docs/*.pdf
-TODO.md
+#TODO.md
 tests/rect*
