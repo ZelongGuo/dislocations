@@ -80,7 +80,8 @@ int main() {
     double mu2 = 3.3e10;
     double nu2 = 0.25;
 
-    double model2[12] = {-1, -1, -4, 1, -1, -3, -1, -1, -2, 1, -1, 2};
+    // double model2[12] = {-1, -1, -4, 1, -1, -3, -1, -1, -2, 1, -1, 2};
+    double model2[12] = {-1, -1, -4, 1, -1, -3, -1, -1, -2, 0, -1, 0};
     // double model3[12] = {-1.0, -1.0, -5.0, 1.0, -1.0, -5.0, -1.0, 1.0, -5.0, 1.0, -4.0, 2.0};
     int nmodel2 = 1;
     // double model2[24] = {-1, -1, -5, 1, -1, -5, -1, 1, -4, 1, -1, 2,
@@ -214,65 +215,5 @@ int main() {
     free(S3);
     free(E3);
 
-    /*
-    // ---------------------------------------------------------------------------------
-    // Mehdi triangle test
-    printf("\n+-+-+-+-+-+-+-+-+-+-+-+-+-+ Mehdi Triangle -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-
-    double mu3 = 3.3e10;
-    double nu3 = 0.25;
-
-    double model3[12] = {-1.0, -1.0, -5.0, 1.0, -1.0, -5.0, -1.0, 1.0, -5.0, 1.0, -4.0, 2.0};
-    int nmodel3 = 1;
-
-    double observations3[3] = {
-        -1.0,
-        -1.0,
-         // 0.0,
-        -8.0,
-        // -4
-    };
-
-    int nobs3 = 1;
-    double ue, un, uv;
-    double ss, ds, ts;
-
-    // -----------------------------------------------------------------
-
-    double P1[3] = {model3[0], model3[1], model3[2]};
-    double P2[3] = {model3[3], model3[4], model3[5]};
-    double P3[3] = {model3[6], model3[7], model3[8]};
-    ss = model3[9];
-    ds = model3[10];
-    ts = model3[11];
-
-    // TDdispFS(observations3[0], observations3[1], observations3[2], P1, P2, P3, ss, ds, ts, nu3, &ue, &un, &uv);
-    // TDdispHS(observations3[0], observations3[1], observations3[2], P1, P2, P3, ss, ds, ts, nu3, &ue, &un, &uv);
-
-    // printf("x = %f, y = %f, z = %f, ss = %f, ds = %f, ts = %f, nu2 = %f\n", observations2[0],
-    // observations2[1], observations2[2],ss, ds, ts, nu2); printf("P1: %f,  %f, %f\n", P1[0],
-    // P1[1], P1[2]); printf("P2: %f,  %f, %f\n", P2[0], P2[1], P2[2]); printf("P3: %f,  %f, %f\n",
-    // P3[0], P3[1], P3[2]);
-    printf("ue = %.9f, un = %.9f, uv = %.9f\n", ue, un, uv);
-    printf("ue = %f, un = %f, uv = %f\n", ue, un, uv);
-
-    double lambda = 3.3e10;
-    double Stress[6], Strain[6];
-
-    // TDstressFS(observations3[0], observations3[1], observations3[2], P1, P2, P3, ss, ds, ts, mu3, lambda, Stress, Strain);
-    // TDstressHS(observations3[0], observations3[1], observations3[2], P1, P2, P3, ss, ds, ts, mu3, lambda, Stress, Strain);
-    printf("sxx = %f, syy = %f, szz = %f\n", Stress[0], Stress[1], Stress[2]);
-    printf("sxy = %f, sxz = %f, syz = %f\n", Stress[3], Stress[4], Stress[5]);
-
-    printf("\n");
-    printf("exx = %f, eyy = %f, ezz = %f\n", Strain[0], Strain[1], Strain[2]);
-    printf("exy = %f, exz = %f, eyz = %f\n", Strain[3], Strain[4], Strain[5]);
-
-    // double y1 = 4.0, y2 = 999999999.0, y3 = 1.0, beta = 1.0, b1 = 1.0, b2 = 1.0, b3 = 1.0, a = 1.0;
-    // double v11, v22, v33, v12, v13, v23;
-    // AngDisStrainFSC(y1, y2, y3, beta, b1, b2, b3, nu, a, &v11, &v22, &v33, &v12, &v13, &v23);
-    // printf("AngDisStrainFSC: v11: %12.5e, v22: %12.5e, v33: %12.5e, v12 %12.5e, v13: %12.5e, v23: %12.5e\n", v11, v22,
-    //        v33, v12, v13, v23);
-    */
     return 0;
 }
