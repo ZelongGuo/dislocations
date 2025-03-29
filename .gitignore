@@ -5,3 +5,4 @@ dist/*
 docs/*
 #!docs/*.pdf
 TODO.md
+tests/rect*
