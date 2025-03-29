@@ -1,3 +1,7 @@
+# This is for CMake File for Dislocs Extension Module
+# Zelong Guo, @ Potsdam, DE
+
+# ------------------------ Dislocs ------------------------
 # Activate the vitual environment, then CMake would find the python and numpy in this env, necessary for Mac
 find_program(Python3_EXECUTABLE python REQUIRED)
 
@@ -18,11 +22,11 @@ aux_source_directory (${CMAKE_SOURCE_DIR}/src/core/ SOURCES)
 
 # -------- Objectives --------
 # Pythin C Extension Module:
-add_library(dislocations SHARED)
-target_sources(dislocations PRIVATE ${CMAKE_SOURCE_DIR}/src/bindings/dislocations.c ${SOURCES})
+add_library(dislocs SHARED)
+target_sources(dislocs PRIVATE ${CMAKE_SOURCE_DIR}/src/bindings/dislocs.c ${SOURCES})
 
 # Including header files of Python and Numpy:
-target_include_directories(dislocations PRIVATE
+target_include_directories(dislocs PRIVATE
     ${CMAKE_SOURCE_DIR}/include/
     ${Python3_INCLUDE_DIRS}
     ${Python3_NumPy_INCLUDE_DIRS}
@@ -30,7 +34,7 @@ target_include_directories(dislocations PRIVATE
 
 # ------ Build Options -------
 # Complier Options, if you want debugging:
-target_compile_options(dislocations PRIVATE
+target_compile_options(dislocs PRIVATE
     -O2
     -fPIC
 )
@@ -40,18 +44,17 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
 endif()
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_link_libraries(dislocations PRIVATE ${Python3_LIBRARIES})
+    target_link_libraries(dislocs PRIVATE ${Python3_LIBRARIES})
 endif()
 
-set_target_properties(dislocations PROPERTIES
+set_target_properties(dislocs PROPERTIES
     PREFIX ""
-    SUFFIX ".${Python3_SOABI}${CMAKE_SHARED_MODULE_SUFFIX}"  # Python ABI suffix, x.cpython-39*.so
+    SUFFIX ".so"
 )
 
-# Inarllation
 # Get Python site-packages directory
 execute_process(
-    COMMAND "python" -c 
+    COMMAND "python" -c
         "import sys, site; print(site.getsitepackages()[0] if hasattr(site, 'getsitepackages') else sys.prefix)"
     OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
     OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -63,7 +66,8 @@ if(NOT EXISTS ${PYTHON_SITE_PACKAGES})
 endif()
 message(STATUS "Installation path: ${PYTHON_SITE_PACKAGES}")
 
-install(TARGETS dislocations LIBRARY DESTINATION dislocations)
-install(FILES ${CMAKE_SOURCE_DIR}/src/__init__.py DESTINATION dislocations)
-
-
+install(
+    TARGETS dislocs
+    LIBRARY
+    DESTINATION ${PYTHON_SITE_PACKAGES}
+)
