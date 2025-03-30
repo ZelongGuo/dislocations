@@ -11,13 +11,14 @@ description = "A Python C extension for calculating displacement, stress and str
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["numpy>=2.0.0"]
-license = { file = "LICENSE" }
+license = { file = "LICENSE", text = "GPL-3.0" }
 keywords = ["okada", "dislocation", "geophysics", "rde", "tde",]
 
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
-    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: Mac OS",
 ]
 
 [tool.scikit-build]
