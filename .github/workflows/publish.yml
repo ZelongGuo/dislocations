@@ -9,7 +9,7 @@ jobs:
     runs-on: macos-latest
     permissions:
       id-token: write
-    environment: pypi  # the environment name of PyPI configuration
+    environment: release  # the environment name of PyPI configuration
 
     steps:
       # checkout codes
