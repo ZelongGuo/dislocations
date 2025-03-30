@@ -9,5 +9,3 @@
 
 - Github Actions to build and upload the packages
 
-- rename the package with dislocs?
-
