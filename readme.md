@@ -1,8 +1,14 @@
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dislocs)
-![PyPI Version](https://img.shields.io/pypi/v/dislocs)
-![pypi downloads](https://img.shields.io/pypi/dm/dislocs)
-![License](https://img.shields.io/github/license/ZelongGuo/dislocs)
-![Last Commit](https://img.shields.io/github/last-commit/ZelongGuo/dislocs)
+<!-- ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dislocs) -->
+<!-- ![PyPI Version](https://img.shields.io/pypi/v/dislocs) -->
+<!-- ![pypi downloads](https://img.shields.io/pypi/dm/dislocs) -->
+<!-- ![License](https://img.shields.io/github/license/ZelongGuo/dislocs) -->
+<!-- ![Last Commit](https://img.shields.io/github/last-commit/ZelongGuo/dislocs) -->
+
+<!-- [![Python Versions](https://img.shields.io/pypi/pyversions/dislocs?logo=python&logoColor=white)](https://pypi.org/project/dislocs/) -->
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dislocs?logo=python&logoColor=white)
+[![PyPI Version](https://img.shields.io/pypi/v/dislocs?color=blue&logo=pypi&label=PyPI)](https://pypi.org/project/dislocs/)
+[![Downloads](https://img.shields.io/pypi/dm/dislocs?color=green&logo=python&label=Downloads)](https://pypi.org/project/dislocs/)
+[![License](https://img.shields.io/github/license/ZelongGuo/dislocs?logo=apache)](https://github.com/ZelongGuo/dislocs/blob/main/LICENSE)
 
 # Disloc(ation)s
 
