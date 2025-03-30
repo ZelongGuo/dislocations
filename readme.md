@@ -1,7 +1,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dislocs)
 ![PyPI Version](https://img.shields.io/pypi/v/dislocs)
 ![pypi downloads](https://img.shields.io/pypi/dm/dislocs)
-![License](https://img.shields.io/pypi/l/dislocs?)
+![License](https://img.shields.io/github/license/ZelongGuo/dislocs)
 ![Last Commit](https://img.shields.io/github/last-commit/ZelongGuo/dislocs)
 
 # Disloc(ation)s
