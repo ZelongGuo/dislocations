@@ -6,17 +6,26 @@ import pyvista as pv
 import dislocs as dl
 import matplotlib.pyplot as plt
 from matplotlib.tri import Triangulation
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
 
 
 # # initialize gmsh
 # gmsh.initialize(sys.argv)
 # gmsh.model.add("rectangle")
 
-# # 4 coners of the rectangle
-# p1 = gmsh.model.geo.addPoint(439.60017008978974, 3924.5362397775775, -5, meshSize=10)  # 设置不同网格尺寸
-# p2 = gmsh.model.geo.addPoint(429.7520925596677, 3926.272721554247, -5, meshSize=10)
-# p3 = gmsh.model.geo.addPoint(430.34600430580656, 3929.6409624425814, -14.396926207859083, meshSize=10)
-# p4 = gmsh.model.geo.addPoint(440.1940818359286, 3927.904480665912, -14.396926207859083, meshSize=10)
+# 4 coners of the rectangle
+p1 = gmsh.model.geo.addPoint(439.60017008978974, 3924.5362397775775, -5, meshSize=10)  # 设置不同网格尺寸
+p2 = gmsh.model.geo.addPoint(429.7520925596677, 3926.272721554247, -5, meshSize=10)
+p3 = gmsh.model.geo.addPoint(430.34600430580656, 3929.6409624425814, -14.396926207859083, meshSize=10)
+p4 = gmsh.model.geo.addPoint(440.1940818359286, 3927.904480665912, -14.396926207859083, meshSize=10)
+
+rect_points = np.array([
+    [439.60017008978974, 3924.5362397775775, -5],  # 0
+    [429.7520925596677, 3926.272721554247, -5],  # 1
+    [430.34600430580656, 3929.6409624425814, -14.396926207859083,],  # 2
+    [440.1940818359286, 3927.904480665912, -14.396926207859083,]   # 3
+])
 
 
 # # define the edges of the rectangle
@@ -143,8 +152,8 @@ fig = plt.figure(figsize=(20, 6))
 # U_magnitude (3D)
 ax1 = fig.add_subplot(1, 3, 1, projection='3d')
 surf1 = ax1.plot_surface(X, Y, U_magnitude, cmap='rainbow', alpha=0.8)
-ax1.plot_trisurf(points[:, 0], points[:, 1], points[:, 2], triangles=triangles, 
-                 color='lightblue', edgecolor='black', alpha=0.5)
+rect = Poly3DCollection([rect_points], facecolors='lightblue', edgecolors='black', alpha=0.5, linewidths=1)
+ax1.add_collection3d(rect)
 ax1.set_xlabel('X (m)')
 ax1.set_ylabel('Y (m)')
 ax1.set_title('U from dl.rde')
