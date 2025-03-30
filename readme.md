@@ -1,3 +1,9 @@
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dislocs)
+![PyPI Version](https://img.shields.io/pypi/v/dislocs)
+![pypi downloads](https://img.shields.io/pypi/dm/dislocs)
+![License](https://img.shields.io/pypi/l/dislocs?)
+![Last Commit](https://img.shields.io/github/last-commit/ZelongGuo/dislocs)
+
 # Disloc(ation)s
 
 Calculating deformation, stress and strain from rectangular dislocation elements (RDE) and triangular
