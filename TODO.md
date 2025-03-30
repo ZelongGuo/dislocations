@@ -7,5 +7,5 @@
 
 - use Sphinx to create the complete docs and upload to ReadTheDocs
 
-- Github Actions to build and upload the packages
+- Github Actions to build and upload the packages, deployment failed 
 
