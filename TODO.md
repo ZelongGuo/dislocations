@@ -1,3 +1,4 @@
+- stress kernel calculation
 - layered elastic models
    - Haskell matrix?
 
